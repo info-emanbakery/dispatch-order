@@ -13,17 +13,51 @@ function firstZodError(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Invalid input.";
 }
 
+// ─── Auto-code generation ────────────────────────────────────────────────────
+
+async function nextSalesmanCode(): Promise<string> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("salesmen")
+    .select("code")
+    .like("code", "SLM-%")
+    .order("code", { ascending: false })
+    .limit(1);
+
+  if (!data || data.length === 0) return "SLM-001";
+  const last = (data[0]?.code as string | null) ?? "SLM-000";
+  const num = parseInt(last.replace("SLM-", ""), 10);
+  return `SLM-${String(num + 1).padStart(3, "0")}`;
+}
+
+async function nextProductCode(): Promise<string> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("products")
+    .select("code")
+    .like("code", "PRD-%")
+    .order("code", { ascending: false })
+    .limit(1);
+
+  if (!data || data.length === 0) return "PRD-001";
+  const last = (data[0]?.code as string | null) ?? "PRD-000";
+  const num = parseInt(last.replace("PRD-", ""), 10);
+  return `PRD-${String(num + 1).padStart(3, "0")}`;
+}
+
 // ─── Salesmen ────────────────────────────────────────────────────────────────
 
 const createSalesmanSchema = z.object({
-  code: z.string().trim().max(20).optional().or(z.literal("")),
   name: z.string().trim().min(2, "Name must be at least 2 characters.").max(100),
   phone: z.string().trim().max(30).optional().or(z.literal("")),
   area: z.string().trim().max(100).optional().or(z.literal("")),
+  iqamaNumber: z.string().trim().max(30).optional().or(z.literal("")),
+  vehicleNumber: z.string().trim().max(30).optional().or(z.literal("")),
 });
 
 const updateSalesmanSchema = createSalesmanSchema.extend({
   salesmanId: z.uuid(),
+  code: z.string().trim().max(20).optional().or(z.literal("")),
 });
 
 const toggleActiveSchema = z.object({
@@ -39,22 +73,20 @@ export async function createSalesmanAction(input: z.infer<typeof createSalesmanS
   const parsed = createSalesmanSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: firstZodError(parsed.error) };
 
-  const { code, name, phone, area } = parsed.data;
+  const { name, phone, area, iqamaNumber, vehicleNumber } = parsed.data;
+  const code = await nextSalesmanCode();
   const admin = createAdminClient();
   const { error } = await admin.from("salesmen").insert({
-    code: code ?? null,
+    code,
     name,
     phone: phone ?? null,
     area: area ?? null,
+    iqama_number: iqamaNumber ?? null,
+    vehicle_number: vehicleNumber ?? null,
     active: true,
     created_by: session.userId,
   });
-  if (error) {
-    const friendly = error.message.toLowerCase().includes("unique")
-      ? "A salesman with this code already exists."
-      : error.message;
-    return { success: false, error: friendly };
-  }
+  if (error) return { success: false, error: error.message };
   revalidatePath("/dashboard/salesmen");
   return { success: true };
 }
@@ -67,11 +99,18 @@ export async function updateSalesmanAction(input: z.infer<typeof updateSalesmanS
   const parsed = updateSalesmanSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: firstZodError(parsed.error) };
 
-  const { salesmanId, code, name, phone, area } = parsed.data;
+  const { salesmanId, code, name, phone, area, iqamaNumber, vehicleNumber } = parsed.data;
   const admin = createAdminClient();
   const { error } = await admin
     .from("salesmen")
-    .update({ code: code ?? null, name, phone: phone ?? null, area: area ?? null })
+    .update({
+      code: code || undefined,
+      name,
+      phone: phone ?? null,
+      area: area ?? null,
+      iqama_number: iqamaNumber ?? null,
+      vehicle_number: vehicleNumber ?? null,
+    })
     .eq("id", salesmanId);
   if (error) {
     const friendly = error.message.toLowerCase().includes("unique")
@@ -100,11 +139,15 @@ export async function setSalesmanActiveAction(input: z.infer<typeof toggleActive
 
 // ─── Products ────────────────────────────────────────────────────────────────
 
+const PRODUCT_CATEGORIES = ["Chapathi", "Shami", "Labanani", "Samooli", "Felafil", "Abu Navas", "Burger", "Hub", "Other"] as const;
+export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
+
 const createProductSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters.").max(150),
   sku: z.string().trim().max(50).optional().or(z.literal("")),
   barcode: z.string().trim().max(50).optional().or(z.literal("")),
-  name: z.string().trim().min(2, "Name must be at least 2 characters.").max(150),
   unit: z.string().trim().min(1, "Unit is required.").max(20).default("pcs"),
+  category: z.string().trim().max(50).optional().or(z.literal("")),
 });
 
 const updateProductSchema = createProductSchema.extend({
@@ -119,19 +162,22 @@ export async function createProductAction(input: z.infer<typeof createProductSch
   const parsed = createProductSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: firstZodError(parsed.error) };
 
-  const { sku, barcode, name, unit } = parsed.data;
+  const { sku, barcode, name, unit, category } = parsed.data;
+  const code = await nextProductCode();
   const admin = createAdminClient();
   const { error } = await admin.from("products").insert({
-    sku: sku ?? null,
+    code,
+    sku: sku || code, // fall back to code as sku if not provided
     barcode: barcode ?? null,
     name,
     unit,
+    category: category || null,
     active: true,
     created_by: session.userId,
   });
   if (error) {
     const friendly = error.message.toLowerCase().includes("unique")
-      ? "A product with this SKU or barcode already exists."
+      ? "A product with this SKU or code already exists."
       : error.message;
     return { success: false, error: friendly };
   }
@@ -147,11 +193,11 @@ export async function updateProductAction(input: z.infer<typeof updateProductSch
   const parsed = updateProductSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: firstZodError(parsed.error) };
 
-  const { productId, sku, barcode, name, unit } = parsed.data;
+  const { productId, sku, barcode, name, unit, category } = parsed.data;
   const admin = createAdminClient();
   const { error } = await admin
     .from("products")
-    .update({ sku: sku ?? null, barcode: barcode ?? null, name, unit })
+    .update({ sku: sku ?? null, barcode: barcode ?? null, name, unit, category: category ?? null })
     .eq("id", productId);
   if (error) {
     const friendly = error.message.toLowerCase().includes("unique")
@@ -178,7 +224,9 @@ export async function setProductActiveAction(input: z.infer<typeof toggleActiveS
   return { success: true };
 }
 
-// ─── Pricing ─────────────────────────────────────────────────────────────────
+export { PRODUCT_CATEGORIES };
+
+// ─── Pricing (direct audit-log style — used by the Pricing page) ──────────────
 
 const upsertPriceSchema = z.object({
   salesmanId: z.uuid(),
@@ -216,7 +264,7 @@ export async function createPriceAction(input: z.infer<typeof upsertPriceSchema>
   });
   if (error) {
     const friendly = error.message.toLowerCase().includes("overlap")
-      ? "A price entry for this salesman and product already exists for the selected validity period. Adjust the dates to avoid overlapping windows."
+      ? "A price entry for this salesman and product already exists for the selected validity period."
       : error.message;
     return { success: false, error: friendly };
   }
@@ -240,7 +288,7 @@ export async function updatePriceAction(input: z.infer<typeof updatePriceSchema>
     .eq("id", priceId);
   if (error) {
     const friendly = error.message.toLowerCase().includes("overlap")
-      ? "The updated validity window overlaps with another price entry for this salesman and product. Adjust the dates."
+      ? "The updated validity window overlaps with another price entry for this salesman and product."
       : error.message;
     return { success: false, error: friendly };
   }

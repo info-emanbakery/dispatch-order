@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { setProductActiveAction } from "@/server/catalog-actions";
+import { PRODUCT_CATEGORIES, setProductActiveAction } from "@/server/catalog-actions";
 
 import { CreateProductDialog, EditProductDialog } from "./product-dialog";
 import { ProductPricesDrawer, type SalesmanPriceEntry } from "./product-prices-drawer";
@@ -40,6 +40,7 @@ import { ProductsTable } from "./products-table";
 import type { ProductRow } from "./types";
 
 const STATUS_FILTERS = ["All", "Active", "Discontinued"];
+const CATEGORY_FILTERS = ["All", ...PRODUCT_CATEGORIES];
 
 export function Products({
   products,
@@ -61,7 +62,7 @@ export function Products({
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility] = React.useState<VisibilityState>({ search: false });
-  const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 15 });
 
   const [createOpen, setCreateOpen] = React.useState(false);
   const [editRow, setEditRow] = React.useState<ProductRow | null>(null);
@@ -97,6 +98,7 @@ export function Products({
 
   const searchQuery = (table.getColumn("search")?.getFilterValue() as string | undefined) ?? "";
   const statusFilter = (table.getColumn("active")?.getFilterValue() as string | undefined) ?? "All";
+  const categoryFilter = (table.getColumn("category")?.getFilterValue() as string | undefined) ?? "All";
 
   let toggleLabel = toggleRow?.active ? "Discontinue" : "Reactivate";
   if (toggling) toggleLabel = "Working…";
@@ -114,7 +116,6 @@ export function Products({
     }
   }
 
-  // Build price entries for the currently selected product
   const priceEntries: SalesmanPriceEntry[] = React.useMemo(() => {
     if (!pricesProduct) return [];
     return salesmanPrices
@@ -134,7 +135,7 @@ export function Products({
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">Products</CardTitle>
           <CardDescription className="max-w-sm leading-snug">
-            Manage the bakery product catalog. Click "Prices" on any row to view and edit salesman prices.
+            Manage the bakery product catalog. Click "Prices" to view and edit salesman prices.
           </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
             <InputGroup className="h-8 w-full md:w-64">
@@ -143,7 +144,7 @@ export function Products({
               </InputGroupAddon>
               <InputGroupInput
                 className="h-8"
-                placeholder="Search by name, SKU or barcode…"
+                placeholder="Search by name, code or category…"
                 value={searchQuery}
                 onChange={(event) => {
                   table.getColumn("search")?.setFilterValue(event.target.value || undefined);
@@ -159,7 +160,31 @@ export function Products({
           </CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 px-0">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-4">
+          <div className="flex flex-wrap items-center gap-3 px-4">
+            {/* Category filter */}
+            <Select
+              value={categoryFilter}
+              onValueChange={(value) => {
+                table.getColumn("category")?.setFilterValue(value === "All" ? undefined : value);
+                table.setPageIndex(0);
+              }}
+            >
+              <SelectTrigger size="sm" className="w-36">
+                <span className="text-muted-foreground">Category:</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" align="start">
+                <SelectGroup>
+                  {CATEGORY_FILTERS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            {/* Status filter */}
             <Select
               value={statusFilter}
               onValueChange={(value) => {
@@ -181,7 +206,8 @@ export function Products({
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div className="text-muted-foreground text-sm tabular-nums">
+
+            <div className="ml-auto text-muted-foreground text-sm tabular-nums">
               {table.getFilteredRowModel().rows.length} of {products.length} products
             </div>
           </div>
@@ -192,7 +218,6 @@ export function Products({
       <CreateProductDialog open={createOpen} onOpenChange={setCreateOpen} />
       <EditProductDialog product={editRow} open={editRow !== null} onOpenChange={(o) => !o && setEditRow(null)} />
 
-      {/* Prices drawer */}
       {pricesProduct && (
         <ProductPricesDrawer
           open={pricesProduct !== null}

@@ -18,6 +18,27 @@ import { cn } from "@/lib/utils";
 
 import type { ProductRow } from "./types";
 
+const CATEGORY_COLORS: Record<string, string> = {
+  Chapathi: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20",
+  Shami: "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20",
+  Labanani: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20",
+  Samooli: "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-300 dark:border-violet-500/20",
+  Felafil: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20",
+  "Abu Navas": "bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-500/10 dark:text-pink-300 dark:border-pink-500/20",
+  Burger: "bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/20",
+  Hub: "bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/20",
+};
+
+function CategoryBadge({ category }: { category: string | null }) {
+  if (!category) return <span className="text-muted-foreground">—</span>;
+  const cls = CATEGORY_COLORS[category] ?? "bg-zinc-50 text-zinc-700 border-zinc-200";
+  return (
+    <Badge variant="outline" className={cn("border px-2 py-0.5 text-xs font-medium", cls)}>
+      {category}
+    </Badge>
+  );
+}
+
 function StatusBadge({ active }: { active: boolean }) {
   return (
     <Badge
@@ -49,7 +70,7 @@ export function buildProductsColumns({
   const columns: ColumnDef<ProductRow>[] = [
     {
       id: "search",
-      accessorFn: (row) => `${row.name} ${row.sku ?? ""} ${row.barcode ?? ""}`,
+      accessorFn: (row) => `${row.name} ${row.code ?? ""} ${row.sku ?? ""} ${row.barcode ?? ""} ${row.category ?? ""}`,
       filterFn: "includesString",
       enableHiding: true,
     },
@@ -59,18 +80,22 @@ export function buildProductsColumns({
       cell: ({ row }) => (
         <div>
           <div className="font-medium text-foreground text-sm">{row.original.name}</div>
-          {row.original.sku && <div className="text-muted-foreground text-xs">SKU: {row.original.sku}</div>}
+          <div className="flex items-center gap-1.5">
+            {row.original.code && (
+              <span className="font-mono text-muted-foreground text-xs">{row.original.code}</span>
+            )}
+            {row.original.sku && row.original.sku !== row.original.code && (
+              <span className="text-muted-foreground text-xs">· {row.original.sku}</span>
+            )}
+          </div>
         </div>
       ),
     },
     {
-      accessorKey: "barcode",
-      header: "Barcode",
-      cell: ({ row }) => (
-        <span className="font-mono text-sm">
-          {row.original.barcode ?? <span className="text-muted-foreground">—</span>}
-        </span>
-      ),
+      accessorKey: "category",
+      header: "Category",
+      filterFn: (row, _id, value) => value === "All" || row.original.category === value,
+      cell: ({ row }) => <CategoryBadge category={row.original.category} />,
     },
     {
       accessorKey: "unit",

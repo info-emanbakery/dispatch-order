@@ -49,7 +49,7 @@ export function buildSalesmenColumns({
   const columns: ColumnDef<SalesmanRow>[] = [
     {
       id: "search",
-      accessorFn: (row) => `${row.name} ${row.code ?? ""} ${row.area ?? ""}`,
+      accessorFn: (row) => `${row.name} ${row.code ?? ""} ${row.area ?? ""} ${row.iqamaNumber ?? ""} ${row.vehicleNumber ?? ""}`,
       filterFn: "includesString",
       enableHiding: true,
     },
@@ -59,15 +59,35 @@ export function buildSalesmenColumns({
       cell: ({ row }) => (
         <div>
           <div className="font-medium text-foreground text-sm">{row.original.name}</div>
-          {row.original.code && <div className="text-muted-foreground text-xs">{row.original.code}</div>}
+          {row.original.code && (
+            <div className="font-mono text-muted-foreground text-xs">{row.original.code}</div>
+          )}
         </div>
       ),
     },
     {
       accessorKey: "phone",
-      header: "Phone",
+      header: "Mobile",
       cell: ({ row }) => (
         <span className="text-sm">{row.original.phone ?? <span className="text-muted-foreground">—</span>}</span>
+      ),
+    },
+    {
+      id: "iqama",
+      header: "Iqama",
+      cell: ({ row }) => (
+        <span className="font-mono text-sm">
+          {row.original.iqamaNumber ?? <span className="text-muted-foreground">—</span>}
+        </span>
+      ),
+    },
+    {
+      id: "vehicle",
+      header: "Vehicle",
+      cell: ({ row }) => (
+        <span className="font-mono text-sm">
+          {row.original.vehicleNumber ?? <span className="text-muted-foreground">—</span>}
+        </span>
       ),
     },
     {
@@ -85,7 +105,7 @@ export function buildSalesmenColumns({
     },
     {
       accessorKey: "balance",
-      header: () => <div className="text-right">Outstanding (EGP)</div>,
+      header: () => <div className="text-right">Outstanding (SAR)</div>,
       cell: ({ row }) => {
         const bal = row.original.balance;
         return (
@@ -97,18 +117,10 @@ export function buildSalesmenColumns({
                 : "text-muted-foreground",
             )}
           >
-            {bal.toLocaleString("en-EG", { minimumFractionDigits: 2 })}
+            {bal.toLocaleString("en-SA", { minimumFractionDigits: 2 })}
           </div>
         );
       },
-    },
-    {
-      id: "createdAt",
-      accessorFn: (row) => new Date(row.createdAt).getTime(),
-      header: "Created",
-      cell: ({ row }) => (
-        <div className="text-foreground text-sm">{format(new Date(row.original.createdAt), "dd MMM yyyy")}</div>
-      ),
     },
     {
       id: "prices",

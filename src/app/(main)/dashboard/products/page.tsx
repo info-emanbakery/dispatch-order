@@ -15,10 +15,9 @@ export default async function Page() {
   const [productsResult, salesmenResult, pricesResult] = await Promise.all([
     supabase
       .from("products")
-      .select("id, sku, barcode, name, unit, active, created_at")
+      .select("id, code, sku, barcode, name, unit, category, active, created_at")
       .order("name", { ascending: true }),
     supabase.from("salesmen").select("id, name, code").eq("active", true).order("name"),
-    // Active prices only
     supabase
       .from("salesman_prices")
       .select("salesman_id, product_id, price")
@@ -30,10 +29,12 @@ export default async function Page() {
 
   const rows: ProductRow[] = (productsResult.data ?? []).map((p) => ({
     id: p.id as string,
+    code: (p as Record<string, unknown>).code as string | null,
     sku: p.sku as string | null,
     barcode: p.barcode as string | null,
     name: p.name as string,
     unit: p.unit as string,
+    category: (p as Record<string, unknown>).category as string | null,
     active: p.active as boolean,
     createdAt: p.created_at as string,
   }));
@@ -41,13 +42,11 @@ export default async function Page() {
   const salesmen = salesmenResult.data ?? [];
   const activePrices = pricesResult.data ?? [];
 
-  // Build a map: productId -> salesmanId -> price
   const priceMap = new Map<string, number>();
   for (const p of activePrices) {
     priceMap.set(`${p.product_id as string}:${p.salesman_id as string}`, Number(p.price));
   }
 
-  // For each product × salesman, emit one entry (null price if not set)
   const salesmanPrices = rows.flatMap((product) =>
     salesmen.map((sm) => ({
       productId: product.id,

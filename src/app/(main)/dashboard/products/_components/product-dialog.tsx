@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { createProductAction, updateProductAction } from "@/server/catalog-actions";
+import { createProductAction, PRODUCT_CATEGORIES, updateProductAction } from "@/server/catalog-actions";
 
 import type { ProductRow } from "./types";
 
@@ -28,6 +29,7 @@ const formSchema = z.object({
   sku: z.string().trim().max(50).optional().or(z.literal("")),
   barcode: z.string().trim().max(50).optional().or(z.literal("")),
   unit: z.string().trim().min(1, "Unit is required.").max(20),
+  category: z.string().trim().max(50).optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -37,12 +39,14 @@ function ProductForm({
   onSuccess,
   onCancel,
   submitLabel,
+  isCreate,
   action,
 }: {
   defaultValues: FormValues;
   onSuccess: () => void;
   onCancel: () => void;
   submitLabel: string;
+  isCreate?: boolean;
   action: (values: FormValues) => Promise<{ success: boolean; error?: string }>;
 }) {
   const [submitting, setSubmitting] = React.useState(false);
@@ -69,18 +73,30 @@ function ProductForm({
             render={({ field, fieldState }) => (
               <Field className="col-span-2 gap-1.5" data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="pr-name">Product Name *</FieldLabel>
-                <Input {...field} id="pr-name" placeholder="Multigrain Loaf 500g" disabled={submitting} />
+                <Input {...field} id="pr-name" placeholder="CHAPATHI ( XL *10 )" disabled={submitting} />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
           <Controller
             control={form.control}
-            name="sku"
+            name="category"
             render={({ field, fieldState }) => (
               <Field className="gap-1.5" data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="pr-sku">SKU</FieldLabel>
-                <Input {...field} id="pr-sku" placeholder="BK-0001" disabled={submitting} />
+                <FieldLabel htmlFor="pr-category">Category</FieldLabel>
+                <Select value={field.value ?? ""} onValueChange={field.onChange} disabled={submitting}>
+                  <SelectTrigger id="pr-category">
+                    <SelectValue placeholder="Select…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="">— None —</SelectItem>
+                      {PRODUCT_CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -98,15 +114,31 @@ function ProductForm({
           />
           <Controller
             control={form.control}
-            name="barcode"
+            name="sku"
             render={({ field, fieldState }) => (
-              <Field className="col-span-2 gap-1.5" data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="pr-barcode">Barcode (EAN / QR)</FieldLabel>
-                <Input {...field} id="pr-barcode" placeholder="6281234567890" disabled={submitting} />
+              <Field className="gap-1.5" data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="pr-sku">SKU (optional)</FieldLabel>
+                <Input {...field} id="pr-sku" placeholder="auto if blank" disabled={submitting} />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
+          <Controller
+            control={form.control}
+            name="barcode"
+            render={({ field, fieldState }) => (
+              <Field className="gap-1.5" data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="pr-barcode">Barcode</FieldLabel>
+                <Input {...field} id="pr-barcode" placeholder="EAN / QR" disabled={submitting} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          {isCreate && (
+            <div className="col-span-2 rounded-md bg-muted/50 px-3 py-2 text-muted-foreground text-xs">
+              Product code (PRD-XXX) is auto-generated on creation.
+            </div>
+          )}
         </div>
       </FieldGroup>
       <DialogFooter>
@@ -128,15 +160,13 @@ export function CreateProductDialog({ open, onOpenChange }: { open: boolean; onO
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add Product</DialogTitle>
-          <DialogDescription>Add a new bakery product to the catalog.</DialogDescription>
+          <DialogDescription>Add a new product. Code (PRD-XXX) is auto-generated.</DialogDescription>
         </DialogHeader>
         <ProductForm
-          defaultValues={{ name: "", sku: "", barcode: "", unit: "pcs" }}
+          defaultValues={{ name: "", sku: "", barcode: "", unit: "pcs", category: "" }}
           submitLabel="Create Product"
-          action={async (values) => {
-            const result = await createProductAction(values);
-            return result;
-          }}
+          isCreate
+          action={async (values) => createProductAction(values)}
           onSuccess={() => {
             toast.success("Product created");
             onOpenChange(false);
@@ -163,7 +193,9 @@ export function EditProductDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Edit {product.name}</DialogTitle>
-          <DialogDescription>Update product details.</DialogDescription>
+          <DialogDescription>
+            Code: <strong>{product.code ?? "—"}</strong>
+          </DialogDescription>
         </DialogHeader>
         <ProductForm
           key={product.id}
@@ -172,12 +204,10 @@ export function EditProductDialog({
             sku: product.sku ?? "",
             barcode: product.barcode ?? "",
             unit: product.unit,
+            category: product.category ?? "",
           }}
           submitLabel="Save Changes"
-          action={async (values) => {
-            const result = await updateProductAction({ productId: product.id, ...values });
-            return result;
-          }}
+          action={async (values) => updateProductAction({ productId: product.id, ...values })}
           onSuccess={() => {
             toast.success("Product updated");
             onOpenChange(false);
