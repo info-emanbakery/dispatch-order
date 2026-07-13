@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/runner/workspace/.next-internal/server/app/%28main%29/dashboard/default/page/actions.js%20%28server%20actions%20loader%29"],"sourcesContent":["export {setValueToCookie as '706020e8a823a1dc7aea55dc63bece91e606c9389b'} from 'ACTIONS_MODULE0'\nexport {getPreference as '400b08dfde5509067065c7ca7805abe919fc393e9b'} from 'ACTIONS_MODULE0'\nexport {getValueFromCookie as '406975beee4ea23d449bd89852bc841f85ae7b7590'} from 'ACTIONS_MODULE0'\nexport {setValueToCookie as '706020e8a823a1dc7aea55dc63bece91e606c9389b'} from 'ACTIONS_MODULE0'\n"],"names":[],"mappings":";AAAA"}}]
+}

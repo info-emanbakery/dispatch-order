@@ -1,0 +1,41 @@
+{
+  "node": {
+    "706020e8a823a1dc7aea55dc63bece91e606c9389b": {
+      "workers": {
+        "app/(main)/dashboard/default/page": {
+          "moduleId": "[project]/.next-internal/server/app/(main)/dashboard/default/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/server/server-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "setValueToCookie",
+          "filename": "src/server/server-actions.ts"
+        }
+      },
+      "exportedName": "setValueToCookie",
+      "filename": "src/server/server-actions.ts"
+    },
+    "400b08dfde5509067065c7ca7805abe919fc393e9b": {
+      "workers": {
+        "app/(main)/dashboard/default/page": {
+          "moduleId": "[project]/.next-internal/server/app/(main)/dashboard/default/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/server/server-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getPreference",
+          "filename": "src/server/server-actions.ts"
+        }
+      },
+      "exportedName": "getPreference",
+      "filename": "src/server/server-actions.ts"
+    },
+    "406975beee4ea23d449bd89852bc841f85ae7b7590": {
+      "workers": {
+        "app/(main)/dashboard/default/page": {
+          "moduleId": "[project]/.next-internal/server/app/(main)/dashboard/default/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/server/server-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getValueFromCookie",
+          "filename": "src/server/server-actions.ts"
+        }
+      },
+      "exportedName": "getValueFromCookie",
+      "filename": "src/server/server-actions.ts"
+    }
+  },
+  "edge": {}
+}

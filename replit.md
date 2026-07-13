@@ -1,45 +1,61 @@
-# [Project name]
+# Dispatch Order — Studio Admin
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A Next.js 15 App Router + shadcn/ui enterprise admin dashboard. Originally from GitHub (`info-emanbakery/dispatch-order`), now developed in Replit and pushed back to GitHub for Vercel auto-deploy.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `npm run dev` — start the dev server (port 3000)
+- `npm run build` — production build
+- `npm run start` — serve the production build
+- `npm run check` — lint with Biome
+- `npm run check:fix` — lint + auto-fix with Biome
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Next.js 15 (App Router), React 19, TypeScript 5.9
+- shadcn/ui + Radix UI + Tailwind CSS v4
+- Zustand (state), React Hook Form + Zod (forms/validation)
+- Recharts (charts), TanStack Table (data tables)
+- Biome (linting/formatting)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `src/app/` — App Router pages and layouts
+- `src/app/(main)/dashboard/` — all dashboard views
+- `src/app/(main)/auth/` — login/register pages (v1 & v2 variants)
+- `src/components/ui/` — shadcn/ui component library
+- `src/navigation/sidebar/sidebar-items.ts` — sidebar nav config
+- `src/config/app-config.ts` — app-wide config
+- `src/lib/preferences/` — theme/layout preference system
+- `src/stores/` — Zustand stores
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- App Router route groups: `(main)` for authenticated shell, `(external)` for public pages
+- Theme presets (brutalist, soft-pop, tangerine) live in `src/styles/presets/`
+- Preferences persisted via cookies (SSR-safe) and localStorage
+- `legacy` route group under dashboard contains older dashboard variants (v1)
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Enterprise admin dashboard with multiple dashboard views (analytics, CRM, finance, default), chat interface, auth flows (two visual variants), full sidebar navigation with theme/layout controls, and a rich shadcn/ui component library.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- GitHub repo: https://github.com/info-emanbakery/dispatch-order
+- Vercel deployment linked to that GitHub repo — push to GitHub triggers Vercel deploy
+- `husky` and `lint-staged` removed from devDependencies (not compatible with Replit git sandbox)
+- npm `overrides` added to pin `npm-run-path@^5` and `execa@^8` (Replit firewall blocks v6/v9)
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- **Do not re-add `prepare: "husky"` or `lint-staged`** — git hook tools don't work in Replit's sandbox
+- **Keep the `overrides` block in package.json** — `npm-run-path@6.0.0` is blocked by Replit's package firewall; the override pins it to v5 which works
+- When pushing back to GitHub: the `overrides` block, removed `prepare` script, and removed `lint-staged` config are Replit-only changes. Restore them in the GitHub version if you need git hooks on other machines
+- Run `npm run dev` not `pnpm run dev` — this project uses npm
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Dashboard layouts: `src/app/(main)/dashboard/_components/sidebar/`
+- Sidebar nav items: `src/navigation/sidebar/sidebar-items.ts`
+- Theme system entry: `src/lib/preferences/theme.ts`
