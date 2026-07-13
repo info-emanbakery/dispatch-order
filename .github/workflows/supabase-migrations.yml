@@ -1,0 +1,45 @@
+name: Supabase Migrations
+
+# Triggers automatically whenever migration files or config are pushed to main.
+# Any AI agent or developer adding a file to supabase/migrations/ and pushing
+# to main will have it applied to production automatically.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/config.toml"
+  workflow_dispatch: # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  migrate:
+    name: Apply DB Migrations to Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link Supabase project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Apply pending migrations
+        run: supabase db push
+        # This command detects which migrations haven't been applied yet
+        # and runs only the new ones — safe to run repeatedly.
+
+      - name: Verify migration status
+        run: supabase migration list
+        # Prints the full applied/pending migration history to the CI log.
