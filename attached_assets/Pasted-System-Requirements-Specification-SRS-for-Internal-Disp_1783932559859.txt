@@ -1,0 +1,40 @@
+System Requirements Specification (SRS) for Internal Dispatch & Ledger App
+Architecture & Tech Stack:
+Next.js 15 (App Router), React, TypeScript, Tailwind CSS, shadcn/ui. Backend via Supabase (PostgreSQL, Auth, Edge Functions). The system must comfortably handle concurrent daily operations for a distributed field sales organization of up to 85 personnel.
+Module 1: Master Admin & Granular RBAC (Role-Based Access Control)
+ Page/UI: ⁠User Management Dashboard⁠
+ Features:
+ Dynamic Permission Matrix: Discard generic roles (admin/user). Provide a checklist of all app modules during user creation.
+ Granular Toggles: Allow the Master Admin to explicitly assign View, Read, Create, and Edit rights per module.
+ Data Integrity Lock: The "Delete" permission must be globally disabled at the UI and Database level to prevent tampering with historical data.
+Module 2: Advanced Dispatch Order Workflow
+ Page/UI: ⁠New Dispatch Order Page⁠
+ Features:
+ Salesman Selection: Dropdown list to select the active salesman for the dispatch.
+ Product Selection: Multi-select interface for the 70+ bread/bakery product catalog with quantity inputs.
+ Enhancement - Fast Entry: Implement global HID barcode scanner support with burst-gating character suppression for rapid product scanning.
+ Enhancement - Hardware Integration: Utilize the Web Bluetooth API to format and push finalized dispatch payloads directly to portable 80mm ESC/POS thermal receipt printers used by the factory dispatch team.
+Module 3: Dynamic Salesman-Specific Pricing Engine
+ Page/UI: ⁠Pricing Configuration Setup (Admin only)⁠
+ Features:
+ Relational Pricing Matrix: No fixed prices. Every product's price is strictly mapped to individual ⁠Salesman IDs⁠.
+ Automated Price Locking: Upon selecting a salesman in Module 2, trigger a Supabase RPC to instantly fetch their unique assigned prices for the current order calculation.
+ Enhancement - Future-Proofing: Add ⁠valid_from⁠ and ⁠valid_to⁠ database columns. This allows admins to schedule future price changes for specific salesmen without altering historical ledger calculations.
+Module 4: Continuous Financial Ledger & Payment Processing
+ Page/UI: ⁠Payment Reconciliation Entry⁠
+ Features:
+ Double-Entry Logic: Dispatches automatically act as accounts receivable ("Debits").
+ Flexible Payments: Allow factory staff to input received payments (arbitrary lumpsums or partial amounts) as "Credits" against the salesman.
+ Real-time Balance: Continuously aggregate debits and credits to display the live outstanding balance.
+ Enhancement - Automation Hooks: Expose authenticated Supabase Edge Functions (Webhooks) so external mobile automation scripts can push payment payloads or trigger real-time notification alerts.
+Module 5: Salesman Digital Profile & Dynamic Reporting
+ Page/UI: ⁠Individual Salesman Profile & Analytics Dashboard⁠
+ Features:
+ Immutable Audit Trail: A chronological, unalterable log of all activities (dispatches, returns, cash payments) under that specific salesman.
+ Comprehensive Dynamic Reporting: Generate real-time reports based on date ranges (Daily, Weekly, Monthly) filtering by total sales, product-wise dispatch volume, and payment history.
+ Enhancement - Advanced Export Engine: Integrate frontend libraries (e.g., ⁠jspdf⁠, ⁠xlsx⁠) to provide one-click extraction of any filtered report into both Excel (.xlsx) and PDF formats.
+Module 6: Security & Automated Disaster Recovery
+ Features:
+ Row-Level Security (RLS): Strictly enforce RLS policies on all PostgreSQL tables so users only access data permitted by Module 1.
+ Automated Traceability: Use database triggers (⁠AFTER INSERT/UPDATE⁠) to stamp every mutation with a server-side timestamp and the mutating ⁠User ID⁠.
+ Enhancement - Automated Backups: Configure a daily CRON job via Edge Functions to compress the entire daily dispatch and ledger data into a CSV payload, securely storing it or pushing it to external cloud storage.

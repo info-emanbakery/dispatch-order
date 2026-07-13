@@ -191,12 +191,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$package$2e$json$2e5b$json$5d
 ;
 const currentYear = new Date().getFullYear();
 const APP_CONFIG = {
-    name: "Studio Admin",
+    name: "Dispatch Order",
     version: __TURBOPACK__imported__module__$5b$project$5d2f$package$2e$json$2e5b$json$5d2e$cjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"].version,
-    copyright: `© ${currentYear}, Studio Admin.`,
+    copyright: `© ${currentYear}, Dispatch Order.`,
     meta: {
-        title: "Studio Admin - Modern Next.js Dashboard Starter Template",
-        description: "Studio Admin is a modern, open-source dashboard starter template built with Next.js 16, Tailwind CSS v4, and shadcn/ui. Perfect for SaaS apps, admin panels, and internal tools—fully customizable and production-ready."
+        title: "Dispatch Order — Internal Dispatch & Ledger",
+        description: "Internal dispatch and ledger management system for field sales operations: dispatch orders, salesman-specific pricing, payments, and reporting."
     }
 };
 }),

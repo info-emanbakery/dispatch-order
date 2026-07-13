@@ -1,4 +1,4 @@
 {
   "/(external)/page": "app/(external)/page.js",
-  "/(main)/dashboard/default/page": "app/(main)/dashboard/default/page.js"
+  "/(main)/auth/v1/login/page": "app/(main)/auth/v1/login/page.js"
 }

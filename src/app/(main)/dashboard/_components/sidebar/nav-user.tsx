@@ -1,18 +1,34 @@
 "use client";
 
-import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
+import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
+import { EllipsisVertical, LogOut } from "lucide-react";
+import { toast } from "sonner";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/ui/spinner";
+import { createClient } from "@/lib/supabase/client";
 import { getInitials } from "@/lib/utils";
 
 export function NavUser({
@@ -22,9 +38,28 @@ export function NavUser({
     readonly name: string;
     readonly email: string;
     readonly avatar: string;
+    readonly role?: string;
   };
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleLogout() {
+    setSigningOut(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push("/auth/v1/login");
+      router.refresh();
+    } catch {
+      toast.error("Sign out failed", { description: "Please try again." });
+      setSigningOut(false);
+      setConfirmOpen(false);
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -64,28 +99,55 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            {user.role && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-muted-foreground text-xs">{user.role}</DropdownMenuLabel>
+              </>
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUser />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MessageSquareDot />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={(event) => {
+                event.preventDefault();
+                setConfirmOpen(true);
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <AlertDialog open={confirmOpen} onOpenChange={(open) => !signingOut && setConfirmOpen(open)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Log out of your account?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You will be signed out and returned to the login screen. Any unsaved work will be lost.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={signingOut}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(event) => {
+                  event.preventDefault();
+                  void handleLogout();
+                }}
+                disabled={signingOut}
+              >
+                {signingOut ? (
+                  <>
+                    <Spinner className="size-4" />
+                    Signing out…
+                  </>
+                ) : (
+                  "Log out"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SidebarMenuItem>
     </SidebarMenu>
   );
