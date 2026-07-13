@@ -1,8 +1,9 @@
-import { format } from "date-fns";
+import { format, startOfMonth } from "date-fns";
 
 import { requirePermission } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 
+import { DateRangeFilter } from "./_components/date-range-filter";
 import { ExportButtons } from "./_components/export-buttons";
 import { KpiStrip } from "./_components/kpi-strip";
 import { MonthlyChart } from "./_components/monthly-chart";
@@ -11,23 +12,45 @@ import type { MonthlyPoint, ReportKpis, SalesmanPerf } from "./_components/types
 
 export const dynamic = "force-dynamic";
 
-export default async function Page() {
+export default async function Page(props: { searchParams?: Promise<Record<string, string | undefined>> }) {
   await requirePermission("reports", "view");
+
+  const params = await props.searchParams;
+  const now = new Date();
+  const from = params?.from ?? format(startOfMonth(now), "yyyy-MM-dd");
+  const to = params?.to ?? format(now, "yyyy-MM-dd");
+  const toEnd = `${to}T23:59:59`;
+
   const supabase = await createClient();
 
-  const [ordersResult, ledgerResult, balancesResult] = await Promise.all([
+  const [ordersResult, ledgerResult, balancesResult, monthlyLedgerResult] = await Promise.all([
+    // Period-filtered: dispatch orders for KPIs and salesman perf
     supabase
       .from("dispatch_orders")
-      .select("id, salesman_id, total_amount, order_date, status, salesmen(name, active)"),
-    supabase.from("ledger_entries").select("id, salesman_id, entry_type, amount, created_at"),
+      .select("id, salesman_id, total, order_date, status, salesmen(name, active)")
+      .gte("order_date", from)
+      .lte("order_date", to),
+    // Period-filtered: ledger for KPIs and salesman perf
+    supabase
+      .from("ledger_entries")
+      .select("id, salesman_id, entry_type, amount, created_at")
+      .gte("created_at", from)
+      .lte("created_at", toEnd),
+    // All-time balances (always reflects true current debt)
     supabase.from("salesman_balances").select("*"),
+    // Last 12 months for the trend chart (not affected by date filter)
+    supabase
+      .from("ledger_entries")
+      .select("salesman_id, entry_type, amount, created_at")
+      .gte("created_at", format(new Date(now.getFullYear(), now.getMonth() - 11, 1), "yyyy-MM-dd")),
   ]);
 
   const orders = ordersResult.data ?? [];
   const entries = ledgerResult.data ?? [];
   const balances = balancesResult.data ?? [];
+  const monthlyEntries = monthlyLedgerResult.data ?? [];
 
-  // ── KPIs ───────────────────────────────────────────────────────────────────
+  // ── KPIs (period) ──────────────────────────────────────────────────────────
   const totalOrders = orders.length;
   const totalDispatchedValue = entries
     .filter((e) => e.entry_type === "debit")
@@ -35,7 +58,7 @@ export default async function Page() {
   const totalPaymentsCollected = entries
     .filter((e) => e.entry_type === "credit")
     .reduce((s, e) => s + Number(e.amount), 0);
-  const totalOutstandingBalance = totalDispatchedValue - totalPaymentsCollected;
+  const totalOutstandingBalance = balances.reduce((s, b) => s + Number(b.balance ?? 0), 0);
 
   const kpis: ReportKpis = {
     totalOrders,
@@ -44,14 +67,13 @@ export default async function Page() {
     totalOutstandingBalance,
   };
 
-  // ── Monthly chart (last 12 months) ─────────────────────────────────────────
-  const now = new Date();
+  // ── Monthly chart (last 12 months, always) ─────────────────────────────────
   const months: MonthlyPoint[] = Array.from({ length: 12 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
     return { month: format(d, "MMM yy"), dispatched: 0, collected: 0 };
   });
 
-  for (const e of entries) {
+  for (const e of monthlyEntries) {
     const d = new Date(e.created_at as string);
     const key = format(d, "MMM yy");
     const pt = months.find((m) => m.month === key);
@@ -60,7 +82,7 @@ export default async function Page() {
     else pt.collected += Number(e.amount);
   }
 
-  // ── Salesman performance ───────────────────────────────────────────────────
+  // ── Salesman performance (period) ──────────────────────────────────────────
   const salesmanMap = new Map<
     string,
     { name: string; active: boolean; ordersCount: number; dispatchedValue: number; collectedValue: number }
@@ -79,7 +101,7 @@ export default async function Page() {
     const row = salesmanMap.get(sid);
     if (!row) continue;
     row.ordersCount += 1;
-    row.dispatchedValue += Number(o.total_amount ?? 0);
+    row.dispatchedValue += Number(o.total ?? 0);
   }
 
   for (const e of entries) {
@@ -112,12 +134,15 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="font-semibold text-xl">Reports</h1>
-          <p className="text-muted-foreground text-sm">Dispatch and payment analytics across all salesmen.</p>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="font-semibold text-xl">Reports</h1>
+            <p className="text-muted-foreground text-sm">Dispatch and payment analytics across all salesmen.</p>
+          </div>
+          <ExportButtons />
         </div>
-        <ExportButtons />
+        <DateRangeFilter from={from} to={to} />
       </div>
       <KpiStrip kpis={kpis} />
       <MonthlyChart data={months} />

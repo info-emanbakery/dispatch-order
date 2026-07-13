@@ -15,6 +15,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { Plus, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import {
@@ -40,6 +41,8 @@ import { OrderItemsDialog } from "./order-items-dialog";
 import type { DispatchOrderDetail, DispatchOrderRow, DispatchStatus, ProductOption, SalesmanOption } from "./types";
 import { DISPATCH_STATUS_LABELS } from "./types";
 
+type PriceRecord = { salesmanId: string; productId: string; price: number };
+
 const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: "all", label: "All statuses" },
   ...Object.entries(DISPATCH_STATUS_LABELS).map(([v, l]) => ({ value: v, label: l })),
@@ -50,6 +53,7 @@ export function Dispatch({
   orderDetails,
   salesmen,
   products,
+  priceRecords,
   canCreate,
   canEdit,
 }: {
@@ -57,9 +61,12 @@ export function Dispatch({
   readonly orderDetails: Map<string, DispatchOrderDetail>;
   readonly salesmen: SalesmanOption[];
   readonly products: ProductOption[];
+  readonly priceRecords: PriceRecord[];
   readonly canCreate: boolean;
   readonly canEdit: boolean;
 }) {
+  const router = useRouter();
+
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility] = React.useState<VisibilityState>({ search: false });
@@ -68,15 +75,44 @@ export function Dispatch({
   const [createOpen, setCreateOpen] = React.useState(false);
   const [editOrder, setEditOrder] = React.useState<DispatchOrderRow | null>(null);
   const [viewOrder, setViewOrder] = React.useState<DispatchOrderDetail | null>(null);
+  const [pendingViewId, setPendingViewId] = React.useState<string | null>(null);
 
   type AdvanceTarget = "delivered" | "partial" | "returned" | "cancelled";
-  // Submit / advance confirmation
   const [confirmSubmit, setConfirmSubmit] = React.useState<DispatchOrderRow | null>(null);
   const [confirmAdvance, setConfirmAdvance] = React.useState<{
     order: DispatchOrderRow;
     newStatus: AdvanceTarget;
   } | null>(null);
   const [working, setWorking] = React.useState(false);
+
+  // Build per-salesman price map
+  const priceMap = React.useMemo(() => {
+    const map = new Map<string, number>();
+    for (const p of priceRecords) {
+      map.set(`${p.salesmanId}:${p.productId}`, p.price);
+    }
+    return map;
+  }, [priceRecords]);
+
+  // When a new order is created, router.refresh() re-renders the server component.
+  // Once the new order appears in orderDetails, open the items dialog automatically.
+  React.useEffect(() => {
+    if (!pendingViewId) return;
+    const detail = orderDetails.get(pendingViewId);
+    if (detail) {
+      setViewOrder(detail);
+      setPendingViewId(null);
+    }
+  }, [pendingViewId, orderDetails]);
+
+  // Compute salesman-specific product prices for the order currently being viewed
+  const productsForCurrentOrder = React.useMemo((): ProductOption[] => {
+    if (!viewOrder) return products;
+    return products.map((p) => ({
+      ...p,
+      activePrice: priceMap.get(`${viewOrder.salesmanId}:${p.id}`) ?? null,
+    }));
+  }, [viewOrder, products, priceMap]);
 
   const columns = React.useMemo(
     () =>
@@ -222,14 +258,14 @@ export function Dispatch({
         </CardContent>
       </Card>
 
-      {/* Create order dialog */}
+      {/* Create order dialog — after creation, router.refresh() then auto-open items */}
       <CreateOrderDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         salesmen={salesmen}
         onCreated={(orderId) => {
-          const detail = orderDetails.get(orderId);
-          if (detail) setViewOrder(detail);
+          setPendingViewId(orderId);
+          router.refresh();
         }}
       />
 
@@ -241,12 +277,12 @@ export function Dispatch({
         salesmen={salesmen}
       />
 
-      {/* Order items management */}
+      {/* Order items management — uses salesman-specific prices */}
       <OrderItemsDialog
         order={viewOrder}
         open={viewOrder !== null}
         onOpenChange={(o) => !o && setViewOrder(null)}
-        products={products}
+        products={productsForCurrentOrder}
         onChanged={() => {
           // refresh happens via revalidatePath; optimistic re-fetch not needed
         }}

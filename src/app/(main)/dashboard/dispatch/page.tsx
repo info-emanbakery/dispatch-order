@@ -120,12 +120,19 @@ export default async function Page() {
     orderDetailsMap.set(row.id, { ...row, items });
   }
 
+  const priceRecords = (priceData ?? []).map((p) => ({
+    salesmanId: p.salesman_id as string,
+    productId: p.product_id as string,
+    price: Number(p.price),
+  }));
+
   return (
     <Dispatch
       orders={orders}
       orderDetails={orderDetailsMap}
       salesmen={salesmen}
       products={products}
+      priceRecords={priceRecords}
       canCreate={can(session, "dispatch", "create")}
       canEdit={can(session, "dispatch", "edit")}
     />

@@ -82,6 +82,25 @@ export function buildSalesmenColumns({
       cell: ({ row }) => <StatusBadge active={row.original.active} />,
     },
     {
+      accessorKey: "balance",
+      header: () => <div className="text-right">Outstanding (EGP)</div>,
+      cell: ({ row }) => {
+        const bal = row.original.balance;
+        return (
+          <div
+            className={cn(
+              "text-right font-mono text-sm tabular-nums",
+              bal > 0
+                ? "font-semibold text-amber-600 dark:text-amber-400"
+                : "text-muted-foreground",
+            )}
+          >
+            {bal.toLocaleString("en-EG", { minimumFractionDigits: 2 })}
+          </div>
+        );
+      },
+    },
+    {
       id: "createdAt",
       accessorFn: (row) => new Date(row.createdAt).getTime(),
       header: "Created",

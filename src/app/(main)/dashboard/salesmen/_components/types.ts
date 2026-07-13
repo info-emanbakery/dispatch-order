@@ -5,5 +5,6 @@ export type SalesmanRow = {
   phone: string | null;
   area: string | null;
   active: boolean;
+  balance: number;
   createdAt: string;
 };
