@@ -83,11 +83,13 @@ function StatusBadge({ status }: { status: DispatchStatus }) {
 export function buildDispatchColumns({
   canEdit,
   onView,
+  onEdit,
   onSubmit,
   onAdvance,
 }: {
   canEdit: boolean;
   onView: (row: DispatchOrderRow) => void;
+  onEdit: (row: DispatchOrderRow) => void;
   onSubmit: (row: DispatchOrderRow) => void;
   onAdvance: (row: DispatchOrderRow, newStatus: "delivered" | "partial" | "returned" | "cancelled") => void;
 }): ColumnDef<DispatchOrderRow>[] {
@@ -174,6 +176,9 @@ export function buildDispatchColumns({
                 {o.status === "draft" && (
                   <>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => onEdit(o)}>
+                      Edit header
+                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => onSubmit(o)}>
                       <CheckCircle2 />
                       Submit order

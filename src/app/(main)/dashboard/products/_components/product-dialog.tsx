@@ -7,6 +7,8 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,6 +51,7 @@ function ProductForm({
   isCreate?: boolean;
   action: (values: FormValues) => Promise<{ success: boolean; error?: string }>;
 }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   const form = useForm<FormValues>({ resolver: zodResolver(formSchema), defaultValues });
 
@@ -57,6 +60,7 @@ function ProductForm({
     const result = await action(values);
     setSubmitting(false);
     if (result.success) {
+      router.refresh();
       onSuccess();
     } else {
       toast.error("Action failed", { description: result.error });

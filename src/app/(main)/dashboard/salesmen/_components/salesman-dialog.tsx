@@ -7,6 +7,8 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -47,6 +49,7 @@ function SalesmanCreateForm({
   onSuccess: () => void;
   onCancel: () => void;
 }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   const form = useForm<CreateValues>({
     resolver: zodResolver(createSchema),
@@ -58,6 +61,7 @@ function SalesmanCreateForm({
     const result = await createSalesmanAction(values);
     setSubmitting(false);
     if (result.success) {
+      router.refresh();
       onSuccess();
     } else {
       toast.error("Action failed", { description: result.error });
@@ -150,6 +154,7 @@ function SalesmanEditForm({
   onSuccess: () => void;
   onCancel: () => void;
 }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   const form = useForm<EditValues>({
     resolver: zodResolver(editSchema),
@@ -168,6 +173,7 @@ function SalesmanEditForm({
     const result = await updateSalesmanAction({ salesmanId: salesman.id, ...values });
     setSubmitting(false);
     if (result.success) {
+      router.refresh();
       onSuccess();
     } else {
       toast.error("Action failed", { description: result.error });

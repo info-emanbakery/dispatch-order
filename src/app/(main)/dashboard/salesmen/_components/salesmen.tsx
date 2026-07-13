@@ -15,6 +15,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { Plus, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import {
@@ -59,6 +60,7 @@ export function Salesmen({
   readonly canCreate: boolean;
   readonly canEdit: boolean;
 }) {
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility] = React.useState<VisibilityState>({ search: false });
@@ -110,6 +112,7 @@ export function Salesmen({
     if (result.success) {
       toast.success(toggleRow.active ? "Salesman deactivated" : "Salesman reactivated");
       setToggleRow(null);
+      router.refresh();
     } else {
       toast.error("Action failed", { description: result.error });
     }

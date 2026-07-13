@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +41,7 @@ export function SalesmanPricesDrawer({
   salesmanName: string;
   entries: ProductPriceEntry[];
 }) {
+  const router = useRouter();
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [editValue, setEditValue] = React.useState("");
   const [saving, setSaving] = React.useState(false);
@@ -67,6 +69,7 @@ export function SalesmanPricesDrawer({
     if (result.success) {
       toast.success(`Price updated — ${entry.productName}`);
       setEditingId(null);
+      router.refresh();
     } else {
       toast.error("Failed", { description: result.error });
     }

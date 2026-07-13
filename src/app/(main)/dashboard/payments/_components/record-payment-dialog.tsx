@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -58,6 +59,7 @@ export function RecordPaymentDialog({
   salesmen: SalesmanOption[];
   preselectedSalesmanId?: string;
 }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -89,6 +91,7 @@ export function RecordPaymentDialog({
     setSubmitting(false);
     if (result.success) {
       toast.success("Payment recorded");
+      router.refresh();
       onOpenChange(false);
     } else {
       toast.error("Failed to record payment", { description: result.error });

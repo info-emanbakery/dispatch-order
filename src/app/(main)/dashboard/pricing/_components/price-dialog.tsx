@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -75,6 +76,7 @@ function PriceForm({
   submitLabel: string;
   action: (values: FormValues) => Promise<{ success: boolean; error?: string }>;
 }) {
+  const router = useRouter();
   const [submitting, setSubmitting] = React.useState(false);
   const form = useForm<FormValues>({ resolver: zodResolver(formSchema), defaultValues });
 
@@ -83,6 +85,7 @@ function PriceForm({
     const result = await action(values);
     setSubmitting(false);
     if (result.success) {
+      router.refresh();
       onSuccess();
     } else {
       toast.error("Action failed", { description: result.error });

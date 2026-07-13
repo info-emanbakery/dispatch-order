@@ -105,6 +105,15 @@ export function Dispatch({
     }
   }, [pendingViewId, orderDetails]);
 
+  // Keep viewOrder in sync with server data after any router.refresh()
+  React.useEffect(() => {
+    setViewOrder((prev) => {
+      if (!prev) return prev;
+      const updated = orderDetails.get(prev.id);
+      return updated ?? prev;
+    });
+  }, [orderDetails]);
+
   // Compute salesman-specific product prices for the order currently being viewed
   const productsForCurrentOrder = React.useMemo((): ProductOption[] => {
     if (!viewOrder) return products;
@@ -119,6 +128,7 @@ export function Dispatch({
       buildDispatchColumns({
         canEdit,
         onView: (row) => setViewOrder(orderDetails.get(row.id) ?? null),
+        onEdit: (row) => setEditOrder(row),
         onSubmit: (row) => setConfirmSubmit(row),
         onAdvance: (row, newStatus) => setConfirmAdvance({ order: row, newStatus }),
       }),
@@ -152,6 +162,7 @@ export function Dispatch({
     if (result.success) {
       toast.success(`Order ${confirmSubmit.orderNumber} submitted`);
       setConfirmSubmit(null);
+      router.refresh();
     } else {
       toast.error("Submit failed", { description: result.error });
     }
@@ -168,6 +179,7 @@ export function Dispatch({
     if (result.success) {
       toast.success(`Order ${confirmAdvance.order.orderNumber} → ${DISPATCH_STATUS_LABELS[confirmAdvance.newStatus]}`);
       setConfirmAdvance(null);
+      router.refresh();
     } else {
       toast.error("Status update failed", { description: result.error });
     }
@@ -283,9 +295,7 @@ export function Dispatch({
         open={viewOrder !== null}
         onOpenChange={(o) => !o && setViewOrder(null)}
         products={productsForCurrentOrder}
-        onChanged={() => {
-          // refresh happens via revalidatePath; optimistic re-fetch not needed
-        }}
+        onChanged={() => router.refresh()}
       />
 
       {/* Submit confirmation */}

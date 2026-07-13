@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { Users } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,7 @@ export function ProductPricesDrawer({
   productUnit: string;
   entries: SalesmanPriceEntry[];
 }) {
+  const router = useRouter();
   const [defaultPrice, setDefaultPrice] = React.useState("");
   const [overwrite, setOverwrite] = React.useState(false);
   const [settingDefault, setSettingDefault] = React.useState(false);
@@ -63,6 +65,7 @@ export function ProductPricesDrawer({
     if (result.success) {
       toast.success(`Set for ${result.created} salesman(s). ${result.skipped > 0 ? `${result.skipped} already had a price (skipped).` : ""}`);
       setDefaultPrice("");
+      router.refresh();
     } else {
       toast.error("Failed", { description: result.error });
     }
@@ -89,6 +92,7 @@ export function ProductPricesDrawer({
     if (result.success) {
       toast.success(`Price updated for ${entry.salesmanName}`);
       setEditingId(null);
+      router.refresh();
     } else {
       toast.error("Failed", { description: result.error });
     }
