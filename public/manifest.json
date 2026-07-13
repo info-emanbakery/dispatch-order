@@ -1,0 +1,51 @@
+{
+  "name": "Dispatch Order — Internal Dispatch & Ledger",
+  "short_name": "Dispatch",
+  "description": "Internal dispatch and ledger management for bakery field sales operations.",
+  "start_url": "/dashboard/dispatch",
+  "id": "/dashboard/dispatch",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#e05d2a",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "New Order",
+      "short_name": "New Order",
+      "description": "Create a new dispatch order",
+      "url": "/dashboard/dispatch",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Payments",
+      "short_name": "Payments",
+      "description": "View and record payments",
+      "url": "/dashboard/payments",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

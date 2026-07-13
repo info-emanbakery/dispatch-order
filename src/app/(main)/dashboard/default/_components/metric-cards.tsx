@@ -1,92 +1,95 @@
-import { DollarSign, TrendingDown, TrendingUp, UserPlus, Users, Waves } from "lucide-react";
+import { ClipboardList, Coins, TrendingUp, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function MetricCards() {
+interface Props {
+  totalOrders: number;
+  totalRevenue: number;
+  activeSalesmen: number;
+  pendingOrders: number;
+}
+
+export function MetricCards({ totalOrders, totalRevenue, activeSalesmen, pendingOrders }: Props) {
+  const formattedRevenue = totalRevenue.toLocaleString("en-EG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
   return (
-    <div className="grid grid-cols-1 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs xl:grid-cols-4 dark:*:data-[slot=card]:bg-card">
-      <Card>
-        <CardHeader>
+    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 md:gap-4">
+      <Card className="bg-linear-to-t from-primary/5 to-card shadow-xs dark:bg-card">
+        <CardHeader className="pb-2">
           <CardTitle>
             <div className="flex size-7 items-center justify-center rounded-lg border bg-muted text-muted-foreground">
-              <DollarSign className="size-4" />
+              <ClipboardList className="size-4" />
             </div>
           </CardTitle>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Orders</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="font-medium text-3xl tabular-nums leading-none tracking-tight">$1,250.00</div>
-            <Badge>
-              <TrendingUp className="size-3" />
-              +12.5%
-            </Badge>
+          <div className="font-medium text-2xl tabular-nums leading-none tracking-tight md:text-3xl">
+            {totalOrders.toLocaleString()}
           </div>
-          <p className="text-muted-foreground text-sm">Visitors for the last 6 months</p>
+          <p className="text-muted-foreground text-xs">All-time dispatch orders</p>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="bg-linear-to-t from-primary/5 to-card shadow-xs dark:bg-card">
+        <CardHeader className="pb-2">
           <CardTitle>
             <div className="flex size-7 items-center justify-center rounded-lg border bg-muted text-muted-foreground">
-              <UserPlus className="size-4" />
+              <Coins className="size-4" />
             </div>
           </CardTitle>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Revenue</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="font-medium text-3xl tabular-nums leading-none tracking-tight">1,234</div>
-            <Badge variant="destructive">
-              <TrendingDown className="size-3" />
-              -20%
-            </Badge>
+          <div className="font-medium text-2xl tabular-nums leading-none tracking-tight md:text-3xl">
+            {formattedRevenue}
           </div>
-          <p className="text-muted-foreground text-sm">Acquisition needs attention</p>
+          <p className="text-muted-foreground text-xs">EGP · submitted &amp; delivered</p>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="bg-linear-to-t from-primary/5 to-card shadow-xs dark:bg-card">
+        <CardHeader className="pb-2">
           <CardTitle>
             <div className="flex size-7 items-center justify-center rounded-lg border bg-muted text-muted-foreground">
               <Users className="size-4" />
             </div>
           </CardTitle>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Active Salesmen</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="font-medium text-3xl tabular-nums leading-none tracking-tight">45,678</div>
-            <Badge>
-              <TrendingUp className="size-3" />
-              +12.5%
-            </Badge>
+          <div className="font-medium text-2xl tabular-nums leading-none tracking-tight md:text-3xl">
+            {activeSalesmen.toLocaleString()}
           </div>
-          <p className="text-muted-foreground text-sm">Engagement exceeds targets</p>
+          <p className="text-muted-foreground text-xs">Currently active in the field</p>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="bg-linear-to-t from-primary/5 to-card shadow-xs dark:bg-card">
+        <CardHeader className="pb-2">
           <CardTitle>
             <div className="flex size-7 items-center justify-center rounded-lg border bg-muted text-muted-foreground">
-              <Waves className="size-4" />
+              <TrendingUp className="size-4" />
             </div>
           </CardTitle>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Pending</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="font-medium text-3xl tabular-nums leading-none tracking-tight">4.5%</div>
-            <Badge>
-              <TrendingUp className="size-3" />
-              +4.5%
-            </Badge>
+            <div className="font-medium text-2xl tabular-nums leading-none tracking-tight md:text-3xl">
+              {pendingOrders.toLocaleString()}
+            </div>
+            {pendingOrders > 0 && (
+              <Badge variant="destructive" className="text-xs">
+                Needs action
+              </Badge>
+            )}
           </div>
-          <p className="text-muted-foreground text-sm">Meets growth projections</p>
+          <p className="text-muted-foreground text-xs">Draft + submitted orders</p>
         </CardContent>
       </Card>
     </div>
