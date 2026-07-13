@@ -90,7 +90,10 @@ export async function createUserAction(input: z.infer<typeof createUserSchema>):
     const rows = permissions.map((p) => ({ user_id: created.user.id, ...p }));
     const { error: permError } = await admin.from("permissions").upsert(rows, { onConflict: "user_id,module" });
     if (permError) {
-      return { success: false, error: `User created but permissions failed to save: ${permError.message}` };
+      // Roll back: remove profile and auth user so no orphaned record is left
+      await admin.from("profiles").delete().eq("id", created.user.id);
+      await admin.auth.admin.deleteUser(created.user.id);
+      return { success: false, error: `Failed to save permissions — user was not created: ${permError.message}` };
     }
   }
 

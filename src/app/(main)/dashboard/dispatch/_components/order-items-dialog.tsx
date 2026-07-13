@@ -51,7 +51,6 @@ function AddItemRow({
       orderId,
       productId,
       quantity,
-      unitPrice: selected.activePrice,
     });
     setSubmitting(false);
     if (result.success) {

@@ -7,3 +7,4 @@
 - [Server action patterns](server-action-patterns.md) — always "use server"; requirePermission returns session; createAdminClient() bypasses RLS
 - [Git push restriction](git-push-restriction.md) — Main agent blocks git push; use Node.js https + GITHUB_PAT to call GitHub REST API (create tree → commit → PATCH ref).
 - [Next.js revalidatePath + router.refresh pattern](nextjs-refresh-pattern.md) — revalidatePath() only invalidates server cache; client must also call router.refresh() or the UI stays stale.
+- [Dispatch financial integrity rules](dispatch-financial-integrity.md) — unit_price must be server-fetched; submit must be conditional+ordered; cancelled/returned need ledger reversal.
