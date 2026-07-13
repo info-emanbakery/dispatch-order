@@ -1,7 +1,6 @@
-const replitDevOrigins = [
-  process.env.REPLIT_DEV_DOMAIN,
-  ...(process.env.REPLIT_DOMAINS ?? "").split(","),
-].filter(Boolean);
+const replitDevOrigins = [process.env.REPLIT_DEV_DOMAIN, ...(process.env.REPLIT_DOMAINS ?? "").split(",")].filter(
+  Boolean,
+);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

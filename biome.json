@@ -33,12 +33,15 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
+      "!.config",
+      "!.upm",
       "!.github",
       "!.husky",
       "!node_modules",
       "!.next",
       "!dist",
       "!out",
+      "!supabase/.temp",
       "!src/components/ui",
       "!src/components/calendar"
     ]
