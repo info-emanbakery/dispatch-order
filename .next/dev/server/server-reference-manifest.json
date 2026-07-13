@@ -7,6 +7,12 @@
           "async": false,
           "exportedName": "setValueToCookie",
           "filename": "src/server/server-actions.ts"
+        },
+        "app/(main)/auth/v1/login/page": {
+          "moduleId": "[project]/.next-internal/server/app/(main)/auth/v1/login/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/server/server-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "setValueToCookie",
+          "filename": "src/server/server-actions.ts"
         }
       },
       "filename": "src/server/server-actions.ts",
