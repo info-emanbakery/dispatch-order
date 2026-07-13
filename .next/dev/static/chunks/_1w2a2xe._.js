@@ -2854,6 +2854,7 @@ module.exports = {
         "@dnd-kit/sortable": "^10.0.0",
         "@fullcalendar/react": "^7.0.0",
         "@hookform/resolvers": "^5.4.0",
+        "@octokit/rest": "^21.1.1",
         "@shadcn/react": "^0.1.0",
         "@tanstack/react-table": "^8.21.3",
         "class-variance-authority": "^0.7.1",
