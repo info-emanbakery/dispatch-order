@@ -10,6 +10,14 @@ A Next.js 15 App Router + shadcn/ui enterprise admin dashboard. Originally from 
 - `npm run check` — lint with Biome
 - `npm run check:fix` — lint + auto-fix with Biome
 
+## GitHub sync / Vercel deploy
+
+Vercel deploys automatically when GitHub receives a push.
+
+- **Automatic**: `scripts/post-merge.sh` runs after every agent task merge — it installs deps and pushes to GitHub, so Vercel stays in sync with no manual steps.
+- **Manual / one-click**: Use the **"Push to GitHub"** workflow in the Replit workspace to push on demand.
+- **Script**: `scripts/push-to-github.sh` — standalone push; uses the `GITHUB_PAT` secret for auth.
+
 ## Stack
 
 - Next.js 15 (App Router), React 19, TypeScript 5.9
