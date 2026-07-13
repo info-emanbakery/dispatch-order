@@ -58,7 +58,7 @@ export default async function Page() {
   }
 
   // Products list: activePrice will vary by salesman — we'll attach the first price we find
-  // The real price lookup happens in server action (upsertOrderItemAction uses whatever price is passed)
+  // The real price lookup happens in server action (upsertOrderItemAction fetches canonical price from salesman_prices)
   const products: ProductOption[] = (productsResult.data ?? []).map((p) => {
     // Find any active price for this product (displayed as a hint)
     let activePrice: number | null = null;

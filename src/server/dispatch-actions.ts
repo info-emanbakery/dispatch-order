@@ -119,17 +119,29 @@ export async function upsertOrderItemAction(input: z.infer<typeof upsertItemSche
       };
     }
 
-    // Upsert line item with the server-authorised price
-    const { error } = await supabase.from("dispatch_items").upsert(
-      {
+    // Insert or update line item — manual check avoids dependency on a unique constraint
+    const { data: existing } = await supabase
+      .from("dispatch_items")
+      .select("id")
+      .eq("dispatch_order_id", data.orderId)
+      .eq("product_id", data.productId)
+      .maybeSingle();
+
+    if (existing) {
+      const { error } = await supabase
+        .from("dispatch_items")
+        .update({ quantity: data.quantity, unit_price: priceRow.price })
+        .eq("id", existing.id);
+      if (error) return { success: false, error: error.message };
+    } else {
+      const { error } = await supabase.from("dispatch_items").insert({
         dispatch_order_id: data.orderId,
         product_id: data.productId,
         quantity: data.quantity,
         unit_price: priceRow.price,
-      },
-      { onConflict: "dispatch_order_id,product_id" },
-    );
-    if (error) return { success: false, error: error.message };
+      });
+      if (error) return { success: false, error: error.message };
+    }
 
     await recalcTotal(supabase, data.orderId);
     revalidatePath("/dashboard/dispatch");
