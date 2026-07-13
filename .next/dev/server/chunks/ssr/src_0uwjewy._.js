@@ -406,7 +406,11 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/createBrowserClient.js [app-ssr] (ecmascript)");
 ;
 function createClient() {
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createBrowserClient"])(("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/"), ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0"));
+    const url = ("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/");
+    const anonKey = ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0");
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createBrowserClient"])(url, anonKey);
 }
 }),
 "[project]/src/app/(main)/auth/_components/login-form.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {

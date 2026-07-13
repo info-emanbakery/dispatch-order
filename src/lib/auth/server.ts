@@ -33,7 +33,7 @@ export const getSessionProfile = cache(async (): Promise<SessionProfile | null> 
     .eq("id", user.id)
     .single();
 
-  if (!profile || !profile.active) return null;
+  if (!profile?.active) return null;
 
   let permissionRows = null;
   if (!profile.is_master_admin) {

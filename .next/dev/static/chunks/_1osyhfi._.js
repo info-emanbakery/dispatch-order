@@ -2940,6 +2940,8 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 "use strict";
 
 __turbopack_context__.s([
+    "filterSidebarItems",
+    ()=>filterSidebarItems,
     "sidebarItems",
     ()=>sidebarItems
 ]);
@@ -2954,16 +2956,28 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$kanban$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Kanban$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/kanban.mjs [app-client] (ecmascript) <export default as Kanban>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-dashboard.mjs [app-client] (ecmascript) <export default as LayoutDashboard>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$list$2d$todo$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ListTodo$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/list-todo.mjs [app-client] (ecmascript) <export default as ListTodo>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/lock.mjs [app-client] (ecmascript) <export default as Lock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Mail$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/mail.mjs [app-client] (ecmascript) <export default as Mail>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$square$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageSquare$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/message-square.mjs [app-client] (ecmascript) <export default as MessageSquare>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$receipt$2d$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ReceiptText$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/receipt-text.mjs [app-client] (ecmascript) <export default as ReceiptText>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$server$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Server$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/server.mjs [app-client] (ecmascript) <export default as Server>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldCheck$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/shield-check.mjs [app-client] (ecmascript) <export default as ShieldCheck>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shopping$2d$bag$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ShoppingBag$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/shopping-bag.mjs [app-client] (ecmascript) <export default as ShoppingBag>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2d$arrow$2d$up$2d$right$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SquareArrowUpRight$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/square-arrow-up-right.mjs [app-client] (ecmascript) <export default as SquareArrowUpRight>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/users.mjs [app-client] (ecmascript) <export default as Users>");
 ;
 const sidebarItems = [
+    {
+        id: 0,
+        label: "Administration",
+        items: [
+            {
+                id: "user-management",
+                title: "User Management",
+                url: "/dashboard/users",
+                icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$check$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldCheck$3e$__["ShieldCheck"],
+                module: "users"
+            }
+        ]
+    },
     {
         id: 1,
         label: "Dashboards",
@@ -3067,18 +3081,6 @@ const sidebarItems = [
                 icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$receipt$2d$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ReceiptText$3e$__["ReceiptText"]
             },
             {
-                id: "users",
-                title: "Users",
-                url: "/dashboard/users",
-                icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__["Users"]
-            },
-            {
-                id: "roles",
-                title: "Roles",
-                url: "/dashboard/roles",
-                icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__["Lock"]
-            },
-            {
                 id: "authentication",
                 title: "Authentication",
                 icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$fingerprint$2d$pattern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Fingerprint$3e$__["Fingerprint"],
@@ -3158,6 +3160,15 @@ const sidebarItems = [
         ]
     }
 ];
+function filterSidebarItems(groups, permissions) {
+    return groups.map((group)=>({
+            ...group,
+            items: group.items.filter((item)=>!item.module || permissions[item.module]?.view).map((item)=>item.subItems ? {
+                    ...item,
+                    subItems: item.subItems.filter((sub)=>!sub.module || permissions[sub.module]?.view)
+                } : item).filter((item)=>!item.subItems || item.subItems.length > 0)
+        })).filter((group)=>group.items.length > 0);
+}
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
@@ -6226,7 +6237,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/createBrowserClient.js [app-client] (ecmascript)");
 ;
 function createClient() {
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createBrowserClient"])(("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/"), ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0"));
+    const url = ("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/");
+    const anonKey = ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0");
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createBrowserClient"])(url, anonKey);
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -7258,29 +7273,32 @@ const _data = {
 };
 function AppSidebar(t0) {
     _s();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(14);
-    if ($[0] !== "aed0709d79d1b5bddf44b12fb4a0c009ec7095b30621710df1124acc91ee24aa") {
-        for(let $i = 0; $i < 14; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(19);
+    if ($[0] !== "c13a8380bb8dee080277307e28f6d75b45d9d48bd386868318a87e124809ccb5") {
+        for(let $i = 0; $i < 19; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "aed0709d79d1b5bddf44b12fb4a0c009ec7095b30621710df1124acc91ee24aa";
+        $[0] = "c13a8380bb8dee080277307e28f6d75b45d9d48bd386868318a87e124809ccb5";
     }
+    let permissions;
     let props;
     let user;
     if ($[1] !== t0) {
-        ({ user, ...props } = t0);
+        ({ user, permissions, ...props } = t0);
         $[1] = t0;
-        $[2] = props;
-        $[3] = user;
+        $[2] = permissions;
+        $[3] = props;
+        $[4] = user;
     } else {
-        props = $[2];
-        user = $[3];
+        permissions = $[2];
+        props = $[3];
+        user = $[4];
     }
     const { sidebarVariant, sidebarCollapsible, isSynced } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$stores$2f$preferences$2f$preferences$2d$provider$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePreferencesStore"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zustand$2f$esm$2f$react$2f$shallow$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useShallow"])(_AppSidebarUseShallow));
     const variant = isSynced ? sidebarVariant : props.variant;
     const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
     let t1;
-    if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+    if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
         t1 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarHeader"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenu"], {
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuItem"], {
@@ -7292,7 +7310,7 @@ function AppSidebar(t0) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$command$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Command$3e$__["Command"], {}, void 0, false, {
                                     fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                                    lineNumber: 73,
+                                    lineNumber: 78,
                                     columnNumber: 138
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7300,117 +7318,127 @@ function AppSidebar(t0) {
                                     children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$app$2d$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["APP_CONFIG"].name
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                                    lineNumber: 73,
+                                    lineNumber: 78,
                                     columnNumber: 149
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                            lineNumber: 73,
+                            lineNumber: 78,
                             columnNumber: 89
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                        lineNumber: 73,
+                        lineNumber: 78,
                         columnNumber: 55
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                    lineNumber: 73,
+                    lineNumber: 78,
                     columnNumber: 38
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                lineNumber: 73,
+                lineNumber: 78,
                 columnNumber: 25
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-            lineNumber: 73,
+            lineNumber: 78,
             columnNumber: 10
         }, this);
-        $[4] = t1;
+        $[5] = t1;
     } else {
-        t1 = $[4];
+        t1 = $[5];
     }
     let t2;
-    if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-        t2 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarContent"], {
+    if ($[6] !== permissions) {
+        t2 = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$navigation$2f$sidebar$2f$sidebar$2d$items$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["filterSidebarItems"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$navigation$2f$sidebar$2f$sidebar$2d$items$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sidebarItems"], permissions);
+        $[6] = permissions;
+        $[7] = t2;
+    } else {
+        t2 = $[7];
+    }
+    let t3;
+    if ($[8] !== t2) {
+        t3 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarContent"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f28$main$292f$dashboard$2f$_components$2f$sidebar$2f$nav$2d$main$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavMain"], {
-                items: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$navigation$2f$sidebar$2f$sidebar$2d$items$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["sidebarItems"]
+                items: t2
             }, void 0, false, {
                 fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                lineNumber: 80,
+                lineNumber: 93,
                 columnNumber: 26
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-            lineNumber: 80,
+            lineNumber: 93,
             columnNumber: 10
         }, this);
-        $[5] = t2;
+        $[8] = t2;
+        $[9] = t3;
     } else {
-        t2 = $[5];
-    }
-    let t3;
-    if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
-        t3 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f28$main$292f$dashboard$2f$_components$2f$sidebar$2f$sidebar$2d$support$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSupportCard"], {}, void 0, false, {
-            fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-            lineNumber: 87,
-            columnNumber: 10
-        }, this);
-        $[6] = t3;
-    } else {
-        t3 = $[6];
+        t3 = $[9];
     }
     let t4;
-    if ($[7] !== user) {
-        t4 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarFooter"], {
+    if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+        t4 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f28$main$292f$dashboard$2f$_components$2f$sidebar$2f$sidebar$2d$support$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSupportCard"], {}, void 0, false, {
+            fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
+            lineNumber: 101,
+            columnNumber: 10
+        }, this);
+        $[10] = t4;
+    } else {
+        t4 = $[10];
+    }
+    let t5;
+    if ($[11] !== user) {
+        t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarFooter"], {
             children: [
-                t3,
+                t4,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f28$main$292f$dashboard$2f$_components$2f$sidebar$2f$nav$2d$user$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavUser"], {
                     user: user
                 }, void 0, false, {
                     fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-                    lineNumber: 94,
+                    lineNumber: 108,
                     columnNumber: 29
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-            lineNumber: 94,
+            lineNumber: 108,
             columnNumber: 10
         }, this);
-        $[7] = user;
-        $[8] = t4;
+        $[11] = user;
+        $[12] = t5;
     } else {
-        t4 = $[8];
+        t5 = $[12];
     }
-    let t5;
-    if ($[9] !== collapsible || $[10] !== props || $[11] !== t4 || $[12] !== variant) {
-        t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Sidebar"], {
+    let t6;
+    if ($[13] !== collapsible || $[14] !== props || $[15] !== t3 || $[16] !== t5 || $[17] !== variant) {
+        t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Sidebar"], {
             ...props,
             variant: variant,
             collapsible: collapsible,
             children: [
                 t1,
-                t2,
-                t4
+                t3,
+                t5
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/(main)/dashboard/_components/sidebar/app-sidebar.tsx",
-            lineNumber: 102,
+            lineNumber: 116,
             columnNumber: 10
         }, this);
-        $[9] = collapsible;
-        $[10] = props;
-        $[11] = t4;
-        $[12] = variant;
-        $[13] = t5;
+        $[13] = collapsible;
+        $[14] = props;
+        $[15] = t3;
+        $[16] = t5;
+        $[17] = variant;
+        $[18] = t6;
     } else {
-        t5 = $[13];
+        t6 = $[18];
     }
-    return t5;
+    return t6;
 }
 _s(AppSidebar, "Jhxj1PtYuVkmmtEI8PJMgCzbIPY=", false, function() {
     return [

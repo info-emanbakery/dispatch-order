@@ -78,25 +78,33 @@ __turbopack_context__.s([
     "updateSession",
     ()=>updateSession
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/createServerClient.js [middleware] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [middleware] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/createServerClient.js [middleware] (ecmascript)");
 ;
 ;
 async function updateSession(request) {
     let supabaseResponse = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__["NextResponse"].next({
         request
     });
-    const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__["createServerClient"])(("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/"), ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0"), {
+    const url = ("TURBOPACK compile-time value", "https://ptenytzvmrwaagztbkyr.supabase.co/");
+    const anonKey = ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0ZW55dHp2bXJ3YWFnenRia3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDM3ODUsImV4cCI6MjA5OTQ3OTc4NX0.7i66bjE0H5AumNhbtYjaIsArItkQSPZE3nt2UzFiNv0");
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    const supabase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__["createServerClient"])(url, anonKey, {
         cookies: {
             getAll () {
                 return request.cookies.getAll();
             },
             setAll (cookiesToSet) {
-                cookiesToSet.forEach(({ name, value })=>request.cookies.set(name, value));
+                for (const { name, value } of cookiesToSet){
+                    request.cookies.set(name, value);
+                }
                 supabaseResponse = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$middleware$5d$__$28$ecmascript$29$__["NextResponse"].next({
                     request
                 });
-                cookiesToSet.forEach(({ name, value, options })=>supabaseResponse.cookies.set(name, value, options));
+                for (const { name, value, options } of cookiesToSet){
+                    supabaseResponse.cookies.set(name, value, options);
+                }
             }
         }
     });

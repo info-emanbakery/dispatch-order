@@ -10,16 +10,17 @@ import {
   Kanban,
   LayoutDashboard,
   ListTodo,
-  Lock,
   type LucideIcon,
   Mail,
   MessageSquare,
   ReceiptText,
   Server,
+  ShieldCheck,
   ShoppingBag,
   SquareArrowUpRight,
-  Users,
 } from "lucide-react";
+
+import type { ModuleKey, PermissionMap } from "@/lib/auth/modules";
 
 export type NavBadge = "new" | "soon";
 
@@ -31,6 +32,8 @@ export interface NavSubItem {
   badge?: NavBadge;
   disabled?: boolean;
   newTab?: boolean;
+  /** When set, the item is only visible to users with view permission on this module. */
+  module?: ModuleKey;
 }
 
 interface NavItemBase {
@@ -40,6 +43,8 @@ interface NavItemBase {
   badge?: NavBadge;
   disabled?: boolean;
   newTab?: boolean;
+  /** When set, the item is only visible to users with view permission on this module. */
+  module?: ModuleKey;
 }
 
 export interface NavMainLinkItem extends NavItemBase {
@@ -60,6 +65,19 @@ export interface NavGroup {
 }
 
 export const sidebarItems: NavGroup[] = [
+  {
+    id: 0,
+    label: "Administration",
+    items: [
+      {
+        id: "user-management",
+        title: "User Management",
+        url: "/dashboard/users",
+        icon: ShieldCheck,
+        module: "users",
+      },
+    ],
+  },
   {
     id: 1,
     label: "Dashboards",
@@ -163,18 +181,6 @@ export const sidebarItems: NavGroup[] = [
         icon: ReceiptText,
       },
       {
-        id: "users",
-        title: "Users",
-        url: "/dashboard/users",
-        icon: Users,
-      },
-      {
-        id: "roles",
-        title: "Roles",
-        url: "/dashboard/roles",
-        icon: Lock,
-      },
-      {
         id: "authentication",
         title: "Authentication",
         icon: Fingerprint,
@@ -218,3 +224,24 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
 ];
+
+/**
+ * Filters sidebar groups by the user's permission map.
+ * Items tagged with a `module` are hidden unless the user has view permission on it.
+ * Untagged items are always shown.
+ */
+export function filterSidebarItems(groups: NavGroup[], permissions: PermissionMap): NavGroup[] {
+  return groups
+    .map((group) => ({
+      ...group,
+      items: group.items
+        .filter((item) => !item.module || permissions[item.module]?.view)
+        .map((item) =>
+          item.subItems
+            ? { ...item, subItems: item.subItems.filter((sub) => !sub.module || permissions[sub.module]?.view) }
+            : item,
+        )
+        .filter((item) => !item.subItems || item.subItems.length > 0),
+    }))
+    .filter((group) => group.items.length > 0);
+}

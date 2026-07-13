@@ -15,7 +15,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { APP_CONFIG } from "@/config/app-config";
-import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import type { PermissionMap } from "@/lib/auth/modules";
+import { filterSidebarItems, sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
@@ -61,9 +62,11 @@ const _data = {
 
 export function AppSidebar({
   user,
+  permissions,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   readonly user: { readonly name: string; readonly email: string; readonly avatar: string; readonly role?: string };
+  readonly permissions: PermissionMap;
 }) {
   const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
     useShallow((s) => ({
@@ -91,7 +94,7 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={sidebarItems} />
+        <NavMain items={filterSidebarItems(sidebarItems, permissions)} />
         {/* <NavDocuments items={data.documents} /> */}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>

@@ -34,6 +34,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
       <AppSidebar
         variant={variant}
         collapsible={collapsible}
+        permissions={session.permissions}
         user={{
           name: session.fullName,
           email: session.email,
