@@ -2659,6 +2659,11 @@
     gap: .5px;
   }
 
+  :where(.space-y-0 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block: 0;
+  }
+
   :where(.space-y-0\.5 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * .5) * var(--tw-space-y-reverse));
@@ -2769,6 +2774,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     :where(.divide-border\/40 > :not(:last-child)) {
       border-color: color-mix(in oklab, var(--border) 40%, transparent);
+    }
+  }
+
+  :where(.divide-border\/50 > :not(:last-child)) {
+    border-color: var(--border);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    :where(.divide-border\/50 > :not(:last-child)) {
+      border-color: color-mix(in oklab, var(--border) 50%, transparent);
     }
   }
 

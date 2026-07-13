@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 import { BackupPanel } from "./_components/backup-panel";
 import { BulkImportPanel } from "./_components/bulk-import-panel";
+import { PriceImportPanel } from "./_components/price-import-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function Page() {
         <h1 className="font-semibold text-xl">Admin Tools</h1>
         <p className="text-muted-foreground text-sm">Backup, bulk import, and system utilities. Master admin only.</p>
       </div>
+      <PriceImportPanel />
       <BackupPanel initialRuns={(runs as never) ?? []} />
       <BulkImportPanel />
     </div>

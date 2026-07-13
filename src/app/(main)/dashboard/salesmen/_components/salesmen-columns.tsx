@@ -3,7 +3,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { MoreHorizontal, Pencil, UserCheck, UserX } from "lucide-react";
+import { MoreHorizontal, Pencil, Tag, UserCheck, UserX } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,10 +39,12 @@ export function buildSalesmenColumns({
   canEdit,
   onEdit,
   onToggleActive,
+  onViewPrices,
 }: {
   canEdit: boolean;
   onEdit: (salesman: SalesmanRow) => void;
   onToggleActive: (salesman: SalesmanRow) => void;
+  onViewPrices: (salesman: SalesmanRow) => void;
 }): ColumnDef<SalesmanRow>[] {
   const columns: ColumnDef<SalesmanRow>[] = [
     {
@@ -107,6 +109,23 @@ export function buildSalesmenColumns({
       cell: ({ row }) => (
         <div className="text-foreground text-sm">{format(new Date(row.original.createdAt), "dd MMM yyyy")}</div>
       ),
+    },
+    {
+      id: "prices",
+      header: "",
+      cell: ({ row }) => (
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 gap-1 px-2 text-xs"
+          onClick={() => onViewPrices(row.original)}
+        >
+          <Tag className="size-3" />
+          Prices
+        </Button>
+      ),
+      enableHiding: false,
+      enableSorting: false,
     },
   ];
 

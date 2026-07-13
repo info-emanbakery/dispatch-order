@@ -10,21 +10,30 @@ export default async function Page() {
   const session = await requirePermission("salesmen", "view");
   const supabase = await createClient();
 
-  const [{ data, error }, { data: balData }] = await Promise.all([
+  const today = new Date().toISOString().slice(0, 10);
+
+  const [salesmenResult, balResult, productsResult, pricesResult] = await Promise.all([
     supabase
       .from("salesmen")
       .select("id, code, name, phone, area, active, created_at")
       .order("name", { ascending: true }),
     supabase.from("salesman_balances").select("salesman_id, balance"),
+    supabase.from("products").select("id, name, sku, unit").eq("active", true).order("name"),
+    // Active prices only
+    supabase
+      .from("salesman_prices")
+      .select("salesman_id, product_id, price")
+      .lte("valid_from", today)
+      .or(`valid_to.is.null,valid_to.gte.${today}`),
   ]);
 
-  if (error) throw new Error(error.message);
+  if (salesmenResult.error) throw new Error(salesmenResult.error.message);
 
   const balanceMap = new Map(
-    (balData ?? []).map((b) => [b.salesman_id as string, Number(b.balance ?? 0)]),
+    (balResult.data ?? []).map((b) => [b.salesman_id as string, Number(b.balance ?? 0)]),
   );
 
-  const rows: SalesmanRow[] = (data ?? []).map((s) => ({
+  const rows: SalesmanRow[] = (salesmenResult.data ?? []).map((s) => ({
     id: s.id as string,
     code: s.code as string | null,
     name: s.name as string,
@@ -35,9 +44,31 @@ export default async function Page() {
     createdAt: s.created_at as string,
   }));
 
+  const products = productsResult.data ?? [];
+  const activePrices = pricesResult.data ?? [];
+
+  // Build a map: salesmanId:productId -> price
+  const priceMap = new Map<string, number>();
+  for (const p of activePrices) {
+    priceMap.set(`${p.salesman_id as string}:${p.product_id as string}`, Number(p.price));
+  }
+
+  // For each salesman × product, emit one entry (null price if not set)
+  const productPrices = rows.flatMap((salesman) =>
+    products.map((prod) => ({
+      salesmanId: salesman.id,
+      productId: prod.id as string,
+      productName: prod.name as string,
+      productUnit: prod.unit as string,
+      productSku: prod.sku as string | null,
+      currentPrice: priceMap.get(`${salesman.id}:${prod.id as string}`) ?? null,
+    })),
+  );
+
   return (
     <Salesmen
       salesmen={rows}
+      productPrices={productPrices}
       canCreate={can(session, "salesmen", "create")}
       canEdit={can(session, "salesmen", "edit")}
     />

@@ -34,6 +34,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { setProductActiveAction } from "@/server/catalog-actions";
 
 import { CreateProductDialog, EditProductDialog } from "./product-dialog";
+import { ProductPricesDrawer, type SalesmanPriceEntry } from "./product-prices-drawer";
 import { buildProductsColumns } from "./products-columns";
 import { ProductsTable } from "./products-table";
 import type { ProductRow } from "./types";
@@ -42,10 +43,18 @@ const STATUS_FILTERS = ["All", "Active", "Discontinued"];
 
 export function Products({
   products,
+  salesmanPrices,
   canCreate,
   canEdit,
 }: {
   readonly products: ProductRow[];
+  readonly salesmanPrices: {
+    productId: string;
+    salesmanId: string;
+    salesmanName: string;
+    salesmanCode: string | null;
+    currentPrice: number | null;
+  }[];
   readonly canCreate: boolean;
   readonly canEdit: boolean;
 }) {
@@ -58,6 +67,7 @@ export function Products({
   const [editRow, setEditRow] = React.useState<ProductRow | null>(null);
   const [toggleRow, setToggleRow] = React.useState<ProductRow | null>(null);
   const [toggling, setToggling] = React.useState(false);
+  const [pricesProduct, setPricesProduct] = React.useState<ProductRow | null>(null);
 
   const columns = React.useMemo(
     () =>
@@ -65,6 +75,7 @@ export function Products({
         canEdit,
         onEdit: (row) => setEditRow(row),
         onToggleActive: (row) => setToggleRow(row),
+        onViewPrices: (row) => setPricesProduct(row),
       }),
     [canEdit],
   );
@@ -103,13 +114,27 @@ export function Products({
     }
   }
 
+  // Build price entries for the currently selected product
+  const priceEntries: SalesmanPriceEntry[] = React.useMemo(() => {
+    if (!pricesProduct) return [];
+    return salesmanPrices
+      .filter((sp) => sp.productId === pricesProduct.id)
+      .map((sp) => ({
+        salesmanId: sp.salesmanId,
+        salesmanName: sp.salesmanName,
+        salesmanCode: sp.salesmanCode,
+        currentPrice: sp.currentPrice,
+        priceId: null,
+      }));
+  }, [pricesProduct, salesmanPrices]);
+
   return (
     <>
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">Products</CardTitle>
           <CardDescription className="max-w-sm leading-snug">
-            Manage the bakery product catalog. Discontinued products cannot be added to new dispatch orders.
+            Manage the bakery product catalog. Click "Prices" on any row to view and edit salesman prices.
           </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
             <InputGroup className="h-8 w-full md:w-64">
@@ -166,6 +191,18 @@ export function Products({
 
       <CreateProductDialog open={createOpen} onOpenChange={setCreateOpen} />
       <EditProductDialog product={editRow} open={editRow !== null} onOpenChange={(o) => !o && setEditRow(null)} />
+
+      {/* Prices drawer */}
+      {pricesProduct && (
+        <ProductPricesDrawer
+          open={pricesProduct !== null}
+          onOpenChange={(o) => !o && setPricesProduct(null)}
+          productId={pricesProduct.id}
+          productName={pricesProduct.name}
+          productUnit={pricesProduct.unit}
+          entries={priceEntries}
+        />
+      )}
 
       <AlertDialog open={toggleRow !== null} onOpenChange={(o) => !o && !toggling && setToggleRow(null)}>
         <AlertDialogContent>

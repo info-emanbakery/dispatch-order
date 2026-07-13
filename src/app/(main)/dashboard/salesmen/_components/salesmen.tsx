@@ -34,6 +34,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { setSalesmanActiveAction } from "@/server/catalog-actions";
 
 import { CreateSalesmanDialog, EditSalesmanDialog } from "./salesman-dialog";
+import { SalesmanPricesDrawer, type ProductPriceEntry } from "./salesman-prices-drawer";
 import { buildSalesmenColumns } from "./salesmen-columns";
 import { SalesmenTable } from "./salesmen-table";
 import type { SalesmanRow } from "./types";
@@ -42,10 +43,19 @@ const STATUS_FILTERS = ["All", "Active", "Deactivated"];
 
 export function Salesmen({
   salesmen,
+  productPrices,
   canCreate,
   canEdit,
 }: {
   readonly salesmen: SalesmanRow[];
+  readonly productPrices: {
+    salesmanId: string;
+    productId: string;
+    productName: string;
+    productUnit: string;
+    productSku: string | null;
+    currentPrice: number | null;
+  }[];
   readonly canCreate: boolean;
   readonly canEdit: boolean;
 }) {
@@ -58,6 +68,7 @@ export function Salesmen({
   const [editRow, setEditRow] = React.useState<SalesmanRow | null>(null);
   const [toggleRow, setToggleRow] = React.useState<SalesmanRow | null>(null);
   const [toggling, setToggling] = React.useState(false);
+  const [pricesSalesman, setPricesSalesman] = React.useState<SalesmanRow | null>(null);
 
   const columns = React.useMemo(
     () =>
@@ -65,6 +76,7 @@ export function Salesmen({
         canEdit,
         onEdit: (row) => setEditRow(row),
         onToggleActive: (row) => setToggleRow(row),
+        onViewPrices: (row) => setPricesSalesman(row),
       }),
     [canEdit],
   );
@@ -103,13 +115,27 @@ export function Salesmen({
     }
   }
 
+  // Build price entries for the currently selected salesman
+  const priceEntries: ProductPriceEntry[] = React.useMemo(() => {
+    if (!pricesSalesman) return [];
+    return productPrices
+      .filter((pp) => pp.salesmanId === pricesSalesman.id)
+      .map((pp) => ({
+        productId: pp.productId,
+        productName: pp.productName,
+        productUnit: pp.productUnit,
+        productSku: pp.productSku,
+        currentPrice: pp.currentPrice,
+      }));
+  }, [pricesSalesman, productPrices]);
+
   return (
     <>
       <Card>
         <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
           <CardTitle className="text-xl leading-none">Salesmen</CardTitle>
           <CardDescription className="max-w-sm leading-snug">
-            Manage field salesmen and their routes. Deactivated salesmen cannot receive new dispatch orders.
+            Manage field salesmen. Click "Prices" to view and adjust individual product prices.
           </CardDescription>
           <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
             <InputGroup className="h-8 w-full md:w-64">
@@ -166,6 +192,17 @@ export function Salesmen({
 
       <CreateSalesmanDialog open={createOpen} onOpenChange={setCreateOpen} />
       <EditSalesmanDialog salesman={editRow} open={editRow !== null} onOpenChange={(o) => !o && setEditRow(null)} />
+
+      {/* Prices drawer */}
+      {pricesSalesman && (
+        <SalesmanPricesDrawer
+          open={pricesSalesman !== null}
+          onOpenChange={(o) => !o && setPricesSalesman(null)}
+          salesmanId={pricesSalesman.id}
+          salesmanName={pricesSalesman.name}
+          entries={priceEntries}
+        />
+      )}
 
       <AlertDialog open={toggleRow !== null} onOpenChange={(o) => !o && !toggling && setToggleRow(null)}>
         <AlertDialogContent>
