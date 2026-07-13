@@ -1043,6 +1043,8 @@ module.exports = {
         "@octokit/rest": "^21.1.1",
         "@replit/connectors-sdk": "^0.4.1",
         "@shadcn/react": "^0.1.0",
+        "@supabase/ssr": "^0.12.0",
+        "@supabase/supabase-js": "^2.110.2",
         "@tanstack/react-table": "^8.21.3",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
