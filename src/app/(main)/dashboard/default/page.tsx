@@ -15,7 +15,7 @@ export default async function Page() {
     supabase.from("dispatch_orders").select("total").in("status", ["submitted", "delivered"]),
     supabase
       .from("dispatch_orders")
-      .select("id, order_number, total, status, created_at, salesmen(full_name)")
+      .select("id, order_number, total, status, created_at, salesmen(name)")
       .order("created_at", { ascending: false })
       .limit(8),
   ]);
@@ -29,7 +29,7 @@ export default async function Page() {
     total: Number(o.total) || 0,
     status: o.status as string,
     created_at: o.created_at as string,
-    salesman_name: (o.salesmen as unknown as { full_name: string } | null)?.full_name ?? "—",
+    salesman_name: (o.salesmen as unknown as { name: string } | null)?.name ?? "—",
   }));
 
   const statusCounts = orders.reduce<Record<string, number>>((acc, o) => {

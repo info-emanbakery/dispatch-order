@@ -106,8 +106,8 @@ export async function upsertOrderItemAction(input: z.infer<typeof upsertItemSche
       .select("price")
       .eq("salesman_id", order.salesman_id)
       .eq("product_id", data.productId)
-      .is("valid_to", null)
       .lte("valid_from", todayStr)
+      .or(`valid_to.is.null,valid_to.gte.${todayStr}`)
       .order("valid_from", { ascending: false })
       .limit(1)
       .maybeSingle();

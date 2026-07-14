@@ -64,54 +64,61 @@ function AddItemRow({
   }
 
   return (
-    <div className="flex items-end gap-2 px-4 py-3">
-      <div className="flex-1">
-        <div className="mb-1 text-muted-foreground text-xs">Product</div>
-        <Select value={productId} onValueChange={setProductId} disabled={submitting}>
-          <SelectTrigger className="h-8 text-sm">
-            <SelectValue placeholder="Select product…" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {available.length === 0 ? (
-                <SelectItem value="__none" disabled>
-                  All products added
-                </SelectItem>
-              ) : (
-                available.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.name} ({p.unit}){p.activePrice == null ? " — ⚠ No price" : ""}
+    <div className="px-4 py-3 sm:px-6">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:items-end sm:gap-2">
+        <div className="col-span-2 sm:flex-1">
+          <div className="mb-1 text-muted-foreground text-xs">Product</div>
+          <Select value={productId} onValueChange={setProductId} disabled={submitting}>
+            <SelectTrigger className="h-9 text-sm">
+              <SelectValue placeholder="Select product…" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {available.length === 0 ? (
+                  <SelectItem value="__none" disabled>
+                    All products added
                   </SelectItem>
-                ))
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="w-20">
-        <div className="mb-1 text-muted-foreground text-xs">Qty</div>
-        <Input
-          className="h-8 text-sm"
-          type="number"
-          min="1"
-          step="1"
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-          disabled={submitting}
-        />
-      </div>
-      <div className="w-24">
-        <div className="mb-1 text-muted-foreground text-xs">Unit price</div>
-        <div className="flex h-8 items-center rounded-md border bg-muted/40 px-2 font-mono text-sm">
-          {selected?.activePrice != null
-            ? selected.activePrice.toLocaleString("en-EG", { minimumFractionDigits: 2 })
-            : "—"}
+                ) : (
+                  available.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name} ({p.unit}){p.activePrice == null ? " — ⚠ No price" : ""}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+        <div className="sm:w-20">
+          <div className="mb-1 text-muted-foreground text-xs">Qty</div>
+          <Input
+            className="h-9 text-sm"
+            type="number"
+            min="1"
+            step="1"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            disabled={submitting}
+          />
+        </div>
+        <div className="sm:w-24">
+          <div className="mb-1 text-muted-foreground text-xs">Unit price</div>
+          <div className="flex h-9 items-center rounded-md border bg-muted/40 px-2 font-mono text-sm">
+            {selected?.activePrice != null
+              ? selected.activePrice.toLocaleString("en-EG", { minimumFractionDigits: 2 })
+              : "—"}
+          </div>
+        </div>
+        <Button
+          size="sm"
+          className="col-span-2 h-9 sm:col-span-1"
+          disabled={submitting || !productId}
+          onClick={handleAdd}
+        >
+          {submitting ? <Spinner className="size-3.5" /> : <Plus className="size-3.5" />}
+          Add
+        </Button>
       </div>
-      <Button size="sm" className="h-8" disabled={submitting || !productId} onClick={handleAdd}>
-        {submitting ? <Spinner className="size-3.5" /> : <Plus className="size-3.5" />}
-        Add
-      </Button>
     </div>
   );
 }
@@ -142,16 +149,16 @@ function ItemRow({
   }
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2.5">
-      <div className="flex-1">
-        <div className="font-medium text-sm">{item.productName}</div>
+    <div className="flex items-center gap-2 px-4 py-2.5 sm:px-6">
+      <div className="min-w-0 flex-1">
+        <div className="truncate font-medium text-sm">{item.productName}</div>
         <div className="text-muted-foreground text-xs">{item.productUnit}</div>
       </div>
-      <div className="w-16 text-right font-mono text-sm tabular-nums">{item.quantity}</div>
-      <div className="w-24 text-right font-mono text-sm tabular-nums">
+      <div className="w-10 text-right font-mono text-sm tabular-nums sm:w-16">{item.quantity}</div>
+      <div className="hidden text-right font-mono text-sm tabular-nums sm:block sm:w-24">
         {item.unitPrice.toLocaleString("en-EG", { minimumFractionDigits: 2 })}
       </div>
-      <div className="w-24 text-right font-mono font-semibold text-sm tabular-nums">
+      <div className="w-20 text-right font-mono font-semibold text-sm tabular-nums sm:w-24">
         {item.lineTotal.toLocaleString("en-EG", { minimumFractionDigits: 2 })}
       </div>
       {canEdit && (
@@ -190,8 +197,8 @@ export function OrderItemsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[90dvh] w-[calc(100vw-2rem)] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:w-full">
+        <DialogHeader className="shrink-0 px-4 pb-3 pt-4 sm:px-6">
           <div className="flex items-center gap-2">
             <DialogTitle>{order.orderNumber}</DialogTitle>
             <Badge variant="outline" className="font-normal text-xs">
@@ -204,42 +211,47 @@ export function OrderItemsDialog({
         </DialogHeader>
 
         {/* Column headers */}
-        <div className="flex items-center gap-2 border-t bg-muted/30 px-4 py-1.5">
-          <div className="flex-1 text-muted-foreground text-xs">Product</div>
-          <div className="w-16 text-right text-muted-foreground text-xs">Qty</div>
-          <div className="w-24 text-right text-muted-foreground text-xs">Unit Price</div>
-          <div className="w-24 text-right text-muted-foreground text-xs">Line Total</div>
-          {isDraft && <div className="size-7" />}
-        </div>
-
-        {/* Items */}
-        {order.items.length === 0 ? (
-          <div className="px-4 py-6 text-center text-muted-foreground text-sm">No items yet.</div>
-        ) : (
-          <div className="divide-y divide-border/40">
-            {order.items.map((item) => (
-              <ItemRow key={item.id} item={item} orderId={order.id} canEdit={isDraft} onRemoved={onChanged} />
-            ))}
-          </div>
-        )}
-
-        <Separator />
-        <div className="flex justify-end px-4">
-          <div className="flex items-center gap-4">
-            <span className="text-muted-foreground text-sm">Order total</span>
-            <span className="font-mono font-bold text-lg">
-              {grandTotal.toLocaleString("en-EG", { minimumFractionDigits: 2 })} EGP
-            </span>
+        <div className="shrink-0 border-y bg-muted/30 px-4 py-1.5 sm:px-6">
+          <div className="flex items-center gap-2">
+            <div className="flex-1 text-muted-foreground text-xs">Product</div>
+            <div className="w-10 text-right text-muted-foreground text-xs sm:w-16">Qty</div>
+            <div className="hidden text-right text-muted-foreground text-xs sm:block sm:w-24">Unit Price</div>
+            <div className="w-20 text-right text-muted-foreground text-xs sm:w-24">Total</div>
+            {isDraft && <div className="size-7" />}
           </div>
         </div>
 
-        {/* Add row (draft only) */}
-        {isDraft && (
-          <>
-            <Separator />
-            <AddItemRow orderId={order.id} products={products} usedProductIds={usedProductIds} onAdded={onChanged} />
-          </>
-        )}
+        {/* Scrollable items list */}
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {order.items.length === 0 ? (
+            <div className="px-4 py-8 text-center text-muted-foreground text-sm">No items yet.</div>
+          ) : (
+            <div className="divide-y divide-border/40">
+              {order.items.map((item) => (
+                <ItemRow key={item.id} item={item} orderId={order.id} canEdit={isDraft} onRemoved={onChanged} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer: total + add row */}
+        <div className="shrink-0 border-t bg-background">
+          <div className="flex justify-end px-4 py-2.5 sm:px-6">
+            <div className="flex items-center gap-3">
+              <span className="text-muted-foreground text-sm">Order total</span>
+              <span className="font-mono font-bold text-base sm:text-lg">
+                {grandTotal.toLocaleString("en-EG", { minimumFractionDigits: 2 })} EGP
+              </span>
+            </div>
+          </div>
+
+          {isDraft && (
+            <>
+              <Separator />
+              <AddItemRow orderId={order.id} products={products} usedProductIds={usedProductIds} onAdded={onChanged} />
+            </>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
